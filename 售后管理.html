@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>售后管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* ===== 密码锁样式 ===== */
+        #passwordOverlay {
+            position: fixed;
+            inset: 0;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            flex-direction: column;
+            gap: 12px;
+        }
+        #passwordOverlay h2 {
+            font-weight: 500;
+            color: #0f172a;
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        #passwordOverlay .sub {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        #passwordOverlay input {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-size: 16px;
+            width: 260px;
+            text-align: center;
+            outline: none;
+            transition: 0.2s;
+            background: #fff;
+        }
+        #passwordOverlay input:focus {
+            border-color: #4f6af5;
+            box-shadow: 0 0 0 4px rgba(79,106,245,0.1);
+        }
+        #passwordOverlay button {
+            padding: 10px 40px;
+            background: #4f6af5;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+        }
+        #passwordOverlay button:hover {
+            background: #3b56e0;
+        }
+        .wrong {
+            color: #ef4444;
+            font-size: 14px;
+            display: none;
+            margin-top: 4px;
+        }
+        /* ===== 原有样式 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            padding: 24px 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 28px 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            margin-bottom: 20px;
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left .icon {
+            width: 36px; height: 36px;
+            background: #eef2ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4f6af5;
+            font-size: 18px;
+        }
+        .header-left h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; color: #0f172a; }
+        .header-left h1 span { color: #4f6af5; }
+        .header-left .badge { font-size: 12px; font-weight: 500; color: #4f6af5; background: #eef2ff; padding: 2px 12px; border-radius: 30px; }
+        .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.15s;
+            background: #f1f4f9;
+            color: #1e293b;
+        }
+        .btn-primary { background: #4f6af5; color: #fff; }
+        .btn-primary:hover { background: #3b56e0; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: #f59e0b; color: #fff; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-outline { background: transparent; border: 1px solid #e2e8f0; }
+        .btn-outline:hover { background: #f8fafc; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #f1f4f9;
+        }
+        .stat-card .stat-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .stat-icon.blue { background: #4f6af5; }
+        .stat-icon.yellow { background: #f59e0b; }
+        .stat-icon.green { background: #10b981; }
+        .stat-icon.red { background: #ef4444; }
+        .stat-info .stat-number { font-size: 22px; font-weight: 600; color: #0f172a; line-height: 1.2; }
+        .stat-info .stat-label { font-size: 12px; color: #64748b; }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f4f9;
+            align-items: center;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f1f4f9;
+            border-radius: 8px;
+            padding: 0 4px 0 14px;
+            border: 1px solid transparent;
+            transition: 0.15s;
+            flex: 1 1 180px;
+            min-width: 160px;
+        }
+        .search-box:focus-within {
+            border-color: #4f6af5;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79,106,245,0.08);
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 13px;
+            width: 100%;
+            outline: none;
+        }
+        .search-box button {
+            background: #4f6af5;
+            border: none;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .search-box button:hover { background: #3b56e0; }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group select {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            min-width: 110px;
+            color: #1e293b;
+        }
+        .filter-group select:focus { border-color: #4f6af5; box-shadow: 0 0 0 3px rgba(79,106,245,0.08); }
+        .backup-group { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #f1f4f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1050px;
+        }
+        thead {
+            background: #f8fafc;
+            border-bottom: 1px solid #e9edf2;
+        }
+        thead th {
+            padding: 12px 12px 10px 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #64748b;
+            white-space: nowrap;
+        }
+        tbody tr { border-bottom: 1px solid #f1f4f9; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody td { padding: 10px 12px; vertical-align: middle; }
+
+        .checkbox-col { width: 32px; text-align: center; }
+        .checkbox-col input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: #4f6af5; }
+
+        .order-id { font-weight: 500; color: #0f172a; }
+        .shop-name { font-weight: 500; }
+        .shop-name small { font-weight: 400; color: #94a3b8; font-size: 11px; margin-left: 4px; }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-status .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+        .badge-status.pending { background: #fef3c7; color: #b45309; }
+        .badge-status.pending .dot { background: #f59e0b; }
+        .badge-status.processing { background: #dbeafe; color: #1d4ed8; }
+        .badge-status.processing .dot { background: #3b82f6; }
+        .badge-status.completed { background: #d1fae5; color: #065f46; }
+        .badge-status.completed .dot { background: #10b981; }
+        .badge-status.rejected { background: #fee2e2; color: #991b1b; }
+        .badge-status.rejected .dot { background: #ef4444; }
+
+        .overdue-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .overdue-badge.yes { background: #fee2e2; color: #991b1b; }
+        .overdue-badge.no { background: #d1fae5; color: #065f46; }
+
+        .status-select {
+            width: 100%;
+            min-width: 80px;
+            padding: 4px 8px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: 0.15s;
+            cursor: pointer;
+            background: #f1f4f9;
+            color: #1e293b;
+            appearance: auto;
+        }
+        .status-select:hover { border-color: #d1d5db; }
+        .status-select:focus { border-color: #4f6af5; box-shadow: 0 0 0 3px rgba(79,106,245,0.08); outline: none; }
+
+        .action-btns { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+        .action-btns .btn {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 6px;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .action-btns .btn:hover { background: #f1f4f9; }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: #94a3b8;
+        }
+        .empty-state i { font-size: 40px; color: #d1d5db; margin-bottom: 10px; }
+        .empty-state p { font-size: 15px; font-weight: 500; color: #64748b; }
+        .empty-state .sub { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+        .hidden { display: none !important; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.35);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 580px;
+            width: 100%;
+            padding: 28px 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            animation: modalIn 0.2s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.97) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .modal-header h2 { font-size: 20px; font-weight: 600; }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .modal-close:hover { color: #1e293b; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .form-group label .required { color: #ef4444; }
+        .form-group label .optional { color: #94a3b8; font-weight: 400; }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 9px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: 0.15s;
+            background: #fff;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #4f6af5;
+            box-shadow: 0 0 0 3px rgba(79,106,245,0.06);
+        }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f4f9;
+        }
+
+        .solution-list { max-height: 260px; overflow-y: auto; margin-bottom: 14px; }
+        .solution-item {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            border-left: 3px solid #4f6af5;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .solution-item .left { flex: 1; }
+        .solution-item .meta {
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+        .solution-item .meta .tag { background: #e2e8f0; padding: 0 8px; border-radius: 12px; font-size: 10px; }
+        .solution-item .content { font-size: 13px; color: #1e293b; word-break: break-word; }
+        .solution-item .action .btn {
+            padding: 2px 6px;
+            font-size: 11px;
+            border-radius: 4px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+        }
+        .solution-item .action .btn:hover { background: #e2e8f0; color: #1e293b; }
+
+        .label-with-optional { display: flex; align-items: center; gap: 4px; }
+        .label-with-optional .optional { color: #94a3b8; font-weight: 400; font-size: 12px; }
+
+        .save-hint {
+            font-size: 12px;
+            color: #64748b;
+            background: #f1f4f9;
+            padding: 2px 12px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .save-hint i { color: #10b981; }
+
+        .toggle-form-btn { margin-bottom: 12px; }
+
+        @media (max-width: 700px) {
+            .form-row { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: repeat(2,1fr); }
+            .container { padding: 16px; }
+            .header-left h1 { font-size: 18px; }
+        }
+        @media (max-width: 480px) {
+            .header-actions .btn span { display: none; }
+            .filter-group select { min-width: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 密码锁 ===== -->
+<div id="passwordOverlay">
+    <h2>🔐 售后管理系统</h2>
+    <p class="sub">请输入访问密码</p>
+    <input type="password" id="passwordInput" placeholder="请输入密码..." autofocus />
+    <button id="passwordBtn">确认</button>
+    <p class="wrong" id="wrongMsg">密码错误，请重试</p>
+</div>
+
+<!-- ===== 主内容 ===== -->
+<div id="mainContent" style="display:none;">
+
+<div class="container">
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-left">
+            <div class="icon"><i class="fas fa-headset"></i></div>
+            <h1>售后<span>管理</span></h1>
+            <span class="badge">实时</span>
+            <span class="save-hint"><i class="fas fa-check-circle"></i> 自动保存</span>
+        </div>
+        <div class="header-actions">
+            <!-- 新增设置按钮 -->
+            <button class="btn btn-outline btn-sm" id="settingsBtn"><i class="fas fa-cog"></i></button>
+            <button class="btn btn-outline btn-sm" id="refreshBtn"><i class="fas fa-sync-alt"></i></button>
+            <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> <span>新建</span></button>
+        </div>
+    </div>
+
+    <!-- 统计 -->
+    <div class="stats">
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list-ul"></i></div><div class="stat-info"><div class="stat-number" id="totalCount">0</div><div class="stat-label">总售后</div></div></div>
+        <div class="stat-card"><div class="stat-icon yellow"><i class="fas fa-hourglass-half"></i></div><div class="stat-info"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">待处理</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-number" id="completedCount">0</div><div class="stat-label">已完成</div></div></div>
+        <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">已拒绝</div></div></div>
+    </div>
+
+    <!-- 工具栏 -->
+    <div class="toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索订单号、店铺..." />
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="filter-group">
+            <select id="statusFilter">
+                <option value="">全部状态</option>
+                <option value="待处理">待处理</option>
+                <option value="处理中">处理中</option>
+                <option value="已完成">已完成</option>
+                <option value="已拒绝">已拒绝</option>
+            </select>
+            <select id="shopFilter">
+                <option value="">全部店铺</option>
+            </select>
+            <button class="btn btn-outline btn-sm" id="clearFilterBtn"><i class="fas fa-times"></i> 清除</button>
+            <button class="btn btn-danger btn-sm" id="batchDeleteBtn"><i class="fas fa-trash-alt"></i> 删除</button>
+            <div class="backup-group">
+                <button class="btn btn-success btn-sm" id="exportBtn"><i class="fas fa-file-excel"></i> 导出</button>
+                <button class="btn btn-warning btn-sm" id="importBtn"><i class="fas fa-file-import"></i> 导入</button>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <!-- 表格 -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th class="checkbox-col"><input type="checkbox" id="selectAll" /></th>
+                    <th>订单号</th>
+                    <th>店铺</th>
+                    <th>签收时间</th>
+                    <th>反馈时间</th>
+                    <th>过保</th>
+                    <th>14天</th>
+                    <th>原因</th>
+                    <th>状态</th>
+                    <th style="text-align:center;">操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <div id="emptyState" class="empty-state hidden">
+        <i class="fas fa-inbox"></i>
+        <p>暂无售后记录</p>
+        <div class="sub">点击「新建」添加第一条记录</div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:14px; font-size:13px; color:#94a3b8;">
+        <span id="recordInfo">共 0 条</span>
+        <span id="pageInfo">第 1 / 1 页</span>
+    </div>
+</div>
+
+<!-- 主弹窗 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle">新建售后</h2>
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+        <form id="modalForm" autocomplete="off">
+            <input type="hidden" id="editId" />
+            <div class="form-group">
+                <label>订单号 <span class="required">*</span></label>
+                <input type="text" id="fOrderId" placeholder="例如：ORD-20260724-001" required />
+            </div>
+            <div class="form-group">
+                <label>店铺 <span class="required">*</span></label>
+                <input type="text" id="fShop" placeholder="例如：官方旗舰店" required />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>签收时间 <span class="required">*</span></label>
+                    <input type="text" id="fSignTime" placeholder="2026-07-24" required />
+                </div>
+                <div class="form-group">
+                    <label>反馈时间 <span class="required">*</span></label>
+                    <input type="text" id="fFeedbackTime" placeholder="2026-07-24" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>状态 <span class="required">*</span></label>
+                <select id="fStatus" required>
+                    <option value="待处理">待处理</option>
+                    <option value="处理中">处理中</option>
+                    <option value="已完成">已完成</option>
+                    <option value="已拒绝">已拒绝</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>售后原因</label>
+                <textarea id="fReason" placeholder="简要描述售后原因…"></textarea>
+            </div>
+            <div class="form-group">
+                <label>初始方案（可选）</label>
+                <textarea id="fSolution" placeholder="首次处理方案"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="modalCancelBtn">取消</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 方案管理弹窗 -->
+<div class="modal-overlay" id="solutionModalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="solutionModalTitle">售后方案</h2>
+            <button class="modal-close" id="solutionModalCloseBtn">&times;</button>
+        </div>
+        <div id="solutionModalBody">
+            <div id="solutionList" class="solution-list"></div>
+            <div class="toggle-form-btn">
+                <button class="btn btn-outline btn-sm" id="toggleSolutionFormBtn"><i class="fas fa-plus"></i> 新增方案</button>
+            </div>
+            <div id="solutionFormContainer" style="display:none;">
+                <div class="form-group">
+                    <label>方案内容</label>
+                    <textarea id="newSolutionContent" rows="3" placeholder="请输入方案内容…"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="label-with-optional">运单号 <span class="optional">（选填）</span></label>
+                        <input type="text" id="newSolutionTracking" placeholder="物流单号" />
+                    </div>
+                    <div class="form-group">
+                        <label class="label-with-optional">运输状态 <span class="optional">（选填）</span></label>
+                        <select id="newSolutionTrackingStatus">
+                            <option value="">&nbsp;</option>
+                            <option value="待发货">待发货</option>
+                            <option value="运输中">运输中</option>
+                            <option value="已签收">已签收</option>
+                            <option value="已退回">已退回</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: space-between;">
+                    <button class="btn btn-outline btn-sm" id="cancelEditBtn" style="display:none;">取消编辑</button>
+                    <div>
+                        <button class="btn btn-primary" id="addSolutionBtn"><i class="fas fa-plus"></i> 添加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 修改密码弹窗 ===== -->
+<div class="modal-overlay" id="changePasswordModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>修改密码</h2>
+            <button class="modal-close" id="changePwCloseBtn">&times;</button>
+        </div>
+        <form id="changePwForm" autocomplete="off">
+            <div class="form-group">
+                <label>旧密码 <span class="required">*</span></label>
+                <input type="password" id="oldPw" required />
+            </div>
+            <div class="form-group">
+                <label>新密码 <span class="required">*</span></label>
+                <input type="password" id="newPw" required />
+            </div>
+            <div class="form-group">
+                <label>确认新密码 <span class="required">*</span></label>
+                <input type="password" id="confirmPw" required />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="changePwCancelBtn">取消</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 确认修改</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</div><!-- end mainContent -->
+
+<script>
+// ============================================================
+//  🔐 密码管理
+// ============================================================
+const PASSWORD_STORAGE_KEY = 'admin_password';
+const DEFAULT_PASSWORD = '123456';
+
+// 获取当前正确密码
+function getCorrectPassword() {
+    const stored = localStorage.getItem(PASSWORD_STORAGE_KEY);
+    return stored ? stored : DEFAULT_PASSWORD;
+}
+
+// 验证密码
+function verifyPassword(input) {
+    return input === getCorrectPassword();
+}
+
+// 更新密码
+function updatePassword(newPw) {
+    localStorage.setItem(PASSWORD_STORAGE_KEY, newPw);
+}
+
+// ============================================================
+//  密码锁逻辑
+// ============================================================
+document.getElementById('passwordBtn').addEventListener('click', function() {
+    const input = document.getElementById('passwordInput').value;
+    if (verifyPassword(input)) {
+        document.getElementById('passwordOverlay').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+    } else {
+        document.getElementById('wrongMsg').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+    }
+});
+document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('passwordBtn').click();
+    }
+});
+
+// ============================================================
+//  修改密码弹窗
+// ============================================================
+const changePwModal = document.getElementById('changePasswordModal');
+const changePwCloseBtn = document.getElementById('changePwCloseBtn');
+const changePwCancelBtn = document.getElementById('changePwCancelBtn');
+const changePwForm = document.getElementById('changePwForm');
+const oldPwInput = document.getElementById('oldPw');
+const newPwInput = document.getElementById('newPw');
+const confirmPwInput = document.getElementById('confirmPw');
+
+// 打开修改密码弹窗
+document.getElementById('settingsBtn').addEventListener('click', function() {
+    changePwModal.classList.add('active');
+    oldPwInput.value = '';
+    newPwInput.value = '';
+    confirmPwInput.value = '';
+    oldPwInput.focus();
+});
+
+// 关闭弹窗
+function closeChangePw() {
+    changePwModal.classList.remove('active');
+}
+changePwCloseBtn.addEventListener('click', closeChangePw);
+changePwCancelBtn.addEventListener('click', closeChangePw);
+changePwModal.addEventListener('click', function(e) {
+    if (e.target === changePwModal) closeChangePw();
+});
+
+// 提交修改
+changePwForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const oldPw = oldPwInput.value;
+    const newPw = newPwInput.value;
+    const confirmPw = confirmPwInput.value;
+
+    if (!verifyPassword(oldPw)) {
+        alert('旧密码错误，请重新输入。');
+        oldPwInput.value = '';
+        oldPwInput.focus();
+        return;
+    }
+    if (newPw.length < 4) {
+        alert('新密码长度至少4位。');
+        newPwInput.focus();
+        return;
+    }
+    if (newPw !== confirmPw) {
+        alert('两次输入的新密码不一致。');
+        confirmPwInput.value = '';
+        confirmPwInput.focus();
+        return;
+    }
+
+    updatePassword(newPw);
+    alert('密码修改成功！下次登录请使用新密码。');
+    closeChangePw();
+});
+
+// ============================================================
+//  日期解析工具
+// ============================================================
+function parseDate(input) {
+    if (!input) return null;
+    let str = input.trim();
+    if (!str) return null;
+    let year, month, day;
+    let match = str.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+    if (match) {
+        year = parseInt(match[1]); month = parseInt(match[2]); day = parseInt(match[3]);
+        if (year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        return null;
+    }
+    match = str.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/);
+    if (match) {
+        year = parseInt(match[1]); month = parseInt(match[2]); day = parseInt(match[3]);
+        if (year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        return null;
+    }
+    match = str.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (match) {
+        year = parseInt(match[1]); month = parseInt(match[2]); day = parseInt(match[3]);
+        if (year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        return null;
+    }
+    const d = new Date(str);
+    if (!isNaN(d)) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2,'0');
+        const d2 = String(d.getDate()).padStart(2,'0');
+        if (y >= 1900 && y <= 2100) return `${y}-${m}-${d2}`;
+    }
+    return null;
+}
+
+// ============================================================
+//  数据层
+// ============================================================
+const STORAGE_KEY = 'afterSalesData_v4';
+
+function loadData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                parsed.forEach(item => {
+                    if (!item.solutions) item.solutions = [];
+                    item.solutions.forEach(s => {
+                        if (s.trackingNumber === undefined) s.trackingNumber = '';
+                        if (s.trackingStatus === undefined) s.trackingStatus = '';
+                    });
+                });
+                return parsed;
+            }
+        } catch (e) { /* 忽略 */ }
+    }
+    return [
+        { id: 1, orderId: 'ORD-20260724-001', shop: '官方旗舰店', signTime: '2026-07-20', feedbackTime: '2026-07-24', reason: '音质异常，有杂音', status: '待处理', solutions: [{ content: '初步检测，需返厂维修', createdAt: '2026-07-24T10:00', trackingNumber: '', trackingStatus: '' }] },
+        { id: 2, orderId: 'ORD-20260723-045', shop: '运动户外专营店', signTime: '2026-07-18', feedbackTime: '2026-07-23', reason: '表带尺寸不合适', status: '处理中', solutions: [{ content: '已联系供应商换货', createdAt: '2026-07-23T14:30', trackingNumber: 'SF1234567890', trackingStatus: '运输中' }, { content: '供应商已发货，等待收货', createdAt: '2026-07-24T09:00', trackingNumber: '', trackingStatus: '' }] },
+        { id: 3, orderId: 'ORD-20260722-112', shop: '数码配件优选', signTime: '2025-12-01', feedbackTime: '2026-07-22', reason: '充电口接触不良', status: '已完成', solutions: [{ content: '维修完成，已寄回', createdAt: '2026-07-22T16:00', trackingNumber: 'YT9876543210', trackingStatus: '已签收' }, { content: '客户已签收', createdAt: '2026-07-24T11:00', trackingNumber: '', trackingStatus: '' }] },
+        { id: 4, orderId: 'ORD-20260721-078', shop: '影像旗舰店', signTime: '2026-07-15', feedbackTime: '2026-07-21', reason: '画质不清晰，与描述不符', status: '已拒绝', solutions: [{ content: '不符合退换货条件', createdAt: '2026-07-21T15:00', trackingNumber: '', trackingStatus: '' }] },
+        { id: 5, orderId: 'ORD-20260720-203', shop: '音频设备专营', signTime: '2026-07-19', feedbackTime: '2026-07-20', reason: '左耳无声', status: '待处理', solutions: [] }
+    ];
+}
+
+function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+let 售后数据 = loadData();
+let nextId = 售后数据.reduce((max, d) => Math.max(max, d.id), 0) + 1;
+
+// ============================================================
+//  辅助函数
+// ============================================================
+function formatDate(dt) { if (!dt) return '—'; return dt; }
+function isOverdue(sign) {
+    if (!sign) return false;
+    const now = new Date();
+    const end = new Date(sign);
+    end.setFullYear(end.getFullYear() + 1);
+    return now > end;
+}
+function isOver14Days(sign) {
+    if (!sign) return false;
+    const now = new Date();
+    const end = new Date(sign);
+    end.setDate(end.getDate() + 14);
+    return now > end;
+}
+function overdueBadge(sign) {
+    const over = isOverdue(sign);
+    return `<span class="overdue-badge ${over ? 'yes' : 'no'}">${over ? '已过保' : '保修中'}</span>`;
+}
+function daysBadge(sign) {
+    const over = isOver14Days(sign);
+    return `<span class="overdue-badge ${over ? 'yes' : 'no'}">${over ? '已过14天' : '14天内'}</span>`;
+}
+function formatDateTime(dtStr) {
+    if (!dtStr) return '';
+    try {
+        const d = new Date(dtStr);
+        if (isNaN(d)) return dtStr;
+        return d.toLocaleString('zh-CN', { hour12: false });
+    } catch { return dtStr; }
+}
+
+function applyStatusColors() {
+    document.querySelectorAll('.status-select').forEach(sel => {
+        const val = sel.value;
+        let bg, color;
+        switch(val) {
+            case '待处理': bg='#fef3c7'; color='#b45309'; break;
+            case '处理中': bg='#dbeafe'; color='#1d4ed8'; break;
+            case '已完成': bg='#d1fae5'; color='#065f46'; break;
+            case '已拒绝': bg='#fee2e2'; color='#991b1b'; break;
+            default: bg='#f1f4f9'; color='#1e293b';
+        }
+        sel.style.backgroundColor = bg;
+        sel.style.color = color;
+    });
+}
+
+// ============================================================
+//  渲染
+// ============================================================
+function render() {
+    const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const shopFilter = document.getElementById('shopFilter').value;
+
+    let filtered = 售后数据.filter(item => {
+        const matchSearch = item.orderId.toLowerCase().includes(searchVal) || item.shop.toLowerCase().includes(searchVal);
+        const matchStatus = statusFilter ? item.status === statusFilter : true;
+        const matchShop = shopFilter ? item.shop === shopFilter : true;
+        return matchSearch && matchStatus && matchShop;
+    });
+
+    filtered.sort((a, b) => {
+        if (!a.feedbackTime && !b.feedbackTime) return 0;
+        if (!a.feedbackTime) return 1;
+        if (!b.feedbackTime) return -1;
+        return b.feedbackTime.localeCompare(a.feedbackTime);
+    });
+
+    document.getElementById('totalCount').textContent = 售后数据.length;
+    document.getElementById('pendingCount').textContent = 售后数据.filter(d => d.status === '待处理').length;
+    document.getElementById('completedCount').textContent = 售后数据.filter(d => d.status === '已完成').length;
+    document.getElementById('rejectedCount').textContent = 售后数据.filter(d => d.status === '已拒绝').length;
+
+    const shopSet = new Set(售后数据.map(d => d.shop).filter(Boolean));
+    const shopSelect = document.getElementById('shopFilter');
+    const currentShop = shopSelect.value;
+    shopSelect.innerHTML = '<option value="">全部店铺</option>';
+    Array.from(shopSet).sort().forEach(shop => {
+        const opt = document.createElement('option');
+        opt.value = shop;
+        opt.textContent = shop;
+        shopSelect.appendChild(opt);
+    });
+    shopSelect.value = currentShop;
+
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        document.getElementById('recordInfo').textContent = '共 0 条';
+        document.getElementById('pageInfo').textContent = '第 0 / 0 页';
+        document.getElementById('selectAll').checked = false;
+        return;
+    }
+    empty.classList.add('hidden');
+
+    const statusOptions = ['待处理', '处理中', '已完成', '已拒绝'];
+    let html = '';
+    filtered.forEach(item => {
+        const statusOptsHtml = statusOptions.map(val =>
+            `<option value="${val}" ${item.status === val ? 'selected' : ''}>${val}</option>`
+        ).join('');
+        const solutionCount = item.solutions ? item.solutions.length : 0;
+
+        html += `<tr>
+            <td class="checkbox-col"><input type="checkbox" class="row-checkbox" data-id="${item.id}" /></td>
+            <td><span class="order-id">${item.orderId}</span></td>
+            <td><span class="shop-name">${item.shop} <small>#${item.id}</small></span></td>
+            <td>${formatDate(item.signTime)}</td>
+            <td>${formatDate(item.feedbackTime)}</td>
+            <td>${overdueBadge(item.signTime)}</td>
+            <td>${daysBadge(item.signTime)}</td>
+            <td style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.reason || ''}">${item.reason || '—'}</td>
+            <td>
+                <select class="status-select" data-field="status" data-id="${item.id}">
+                    ${statusOptsHtml}
+                </select>
+            </td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn btn-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-solution" data-id="${item.id}"><i class="fas fa-clipboard-list"></i>${solutionCount > 0 ? ' ' + solutionCount : ''}</button>
+                    <button class="btn btn-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+    document.getElementById('recordInfo').textContent = `共 ${filtered.length} 条`;
+    document.getElementById('pageInfo').textContent = `第 1 / 1 页`;
+
+    applyStatusColors();
+
+    tbody.querySelectorAll('.status-select').forEach(el => {
+        el.addEventListener('change', function() {
+            const id = parseInt(this.dataset.id);
+            const value = this.value;
+            const item = 售后数据.find(d => d.id === id);
+            if (item) {
+                item.status = value;
+                saveData(售后数据);
+                render();
+            }
+        });
+    });
+
+    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const item = 售后数据.find(d => d.id === id);
+            if (item) openModal('编辑售后', { ...item });
+        });
+    });
+
+    tbody.querySelectorAll('.btn-solution').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const item = 售后数据.find(d => d.id === id);
+            if (item) openSolutionModal(item);
+        });
+    });
+
+    tbody.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (confirm('确定要删除该售后记录吗？')) {
+                const id = parseInt(this.dataset.id);
+                售后数据 = 售后数据.filter(d => d.id !== id);
+                saveData(售后数据);
+                render();
+            }
+        });
+    });
+
+    const checkboxes = tbody.querySelectorAll('.row-checkbox');
+    const selectAll = document.getElementById('selectAll');
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            const allChecked = Array.from(checkboxes).every(c => c.checked);
+            selectAll.checked = allChecked;
+        });
+    });
+    selectAll.addEventListener('change', function() {
+        const checked = this.checked;
+        checkboxes.forEach(cb => cb.checked = checked);
+    });
+}
+
+// ============================================================
+//  批量删除
+// ============================================================
+document.getElementById('batchDeleteBtn').addEventListener('click', function() {
+    const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+    if (checkedBoxes.length === 0) {
+        alert('请至少勾选一条记录。');
+        return;
+    }
+    const ids = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.id));
+    if (confirm(`确定要删除选中的 ${ids.length} 条记录吗？`)) {
+        售后数据 = 售后数据.filter(d => !ids.includes(d.id));
+        saveData(售后数据);
+        render();
+        document.getElementById('selectAll').checked = false;
+    }
+});
+
+// ============================================================
+//  主弹窗
+// ============================================================
+const overlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const editIdInput = document.getElementById('editId');
+const fOrderId = document.getElementById('fOrderId');
+const fShop = document.getElementById('fShop');
+const fSignTime = document.getElementById('fSignTime');
+const fFeedbackTime = document.getElementById('fFeedbackTime');
+const fStatus = document.getElementById('fStatus');
+const fReason = document.getElementById('fReason');
+const fSolution = document.getElementById('fSolution');
+
+function openModal(title, data = null) {
+    modalTitle.textContent = title;
+    if (data) {
+        editIdInput.value = data.id;
+        fOrderId.value = data.orderId;
+        fShop.value = data.shop;
+        fSignTime.value = data.signTime || '';
+        fFeedbackTime.value = data.feedbackTime || '';
+        fStatus.value = data.status;
+        fReason.value = data.reason || '';
+        fSolution.value = (data.solutions && data.solutions.length > 0) ? data.solutions[0].content : '';
+    } else {
+        editIdInput.value = '';
+        fOrderId.value = '';
+        fShop.value = '';
+        const today = new Date();
+        const y = today.getFullYear();
+        const m = String(today.getMonth() + 1).padStart(2,'0');
+        const d = String(today.getDate()).padStart(2,'0');
+        const todayStr = `${y}-${m}-${d}`;
+        fSignTime.value = todayStr;
+        fFeedbackTime.value = todayStr;
+        fStatus.value = '待处理';
+        fReason.value = '';
+        fSolution.value = '';
+    }
+    overlay.classList.add('active');
+}
+
+function closeModal() { overlay.classList.remove('active'); }
+
+document.getElementById('addBtn').addEventListener('click', () => openModal('新建售后'));
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+
+document.getElementById('modalForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const id = parseInt(editIdInput.value) || 0;
+    const orderId = fOrderId.value.trim();
+    const shop = fShop.value.trim();
+    const signTimeRaw = fSignTime.value.trim();
+    const feedbackTimeRaw = fFeedbackTime.value.trim();
+    const status = fStatus.value;
+    const reason = fReason.value.trim();
+    const solution = fSolution.value.trim();
+
+    if (!orderId || !shop || !signTimeRaw || !feedbackTimeRaw) {
+        alert('请完整填写订单号、店铺、签收时间和反馈时间');
+        return;
+    }
+
+    const signTime = parseDate(signTimeRaw);
+    const feedbackTime = parseDate(feedbackTimeRaw);
+    if (!signTime) {
+        alert('签收时间格式无效，请使用 YYYY-MM-DD 或类似格式（如 2026-07-24）');
+        return;
+    }
+    if (!feedbackTime) {
+        alert('反馈时间格式无效，请使用 YYYY-MM-DD 或类似格式（如 2026-07-24）');
+        return;
+    }
+
+    if (id) {
+        const idx = 售后数据.findIndex(d => d.id === id);
+        if (idx !== -1) {
+            const item = 售后数据[idx];
+            item.orderId = orderId;
+            item.shop = shop;
+            item.signTime = signTime;
+            item.feedbackTime = feedbackTime;
+            item.status = status;
+            item.reason = reason;
+            if (solution) {
+                const first = item.solutions && item.solutions.length > 0 ? item.solutions[0] : null;
+                if (!first || first.content !== solution) {
+                    if (!item.solutions) item.solutions = [];
+                    item.solutions.unshift({ content: solution, createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '' });
+                }
+            }
+        }
+    } else {
+        售后数据.push({
+            id: nextId++,
+            orderId,
+            shop,
+            signTime,
+            feedbackTime,
+            status,
+            reason,
+            solutions: solution ? [{ content: solution, createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '' }] : []
+        });
+    }
+
+    saveData(售后数据);
+    closeModal();
+    render();
+});
+
+// ============================================================
+//  方案管理（折叠版）
+// ============================================================
+const solutionOverlay = document.getElementById('solutionModalOverlay');
+const solutionModalTitle = document.getElementById('solutionModalTitle');
+const solutionList = document.getElementById('solutionList');
+const newSolutionContent = document.getElementById('newSolutionContent');
+const newSolutionTracking = document.getElementById('newSolutionTracking');
+const newSolutionTrackingStatus = document.getElementById('newSolutionTrackingStatus');
+const addSolutionBtn = document.getElementById('addSolutionBtn');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+const toggleFormBtn = document.getElementById('toggleSolutionFormBtn');
+const formContainer = document.getElementById('solutionFormContainer');
+
+let currentSolutionItemId = null;
+let editingSolutionIndex = -1;
+
+function toggleForm(show, keepButton = false) {
+    if (show) {
+        formContainer.style.display = 'block';
+        if (!keepButton) toggleFormBtn.style.display = 'none';
+    } else {
+        formContainer.style.display = 'none';
+        toggleFormBtn.style.display = 'inline-flex';
+    }
+}
+
+function resetForm() {
+    newSolutionContent.value = '';
+    newSolutionTracking.value = '';
+    newSolutionTrackingStatus.value = '';
+    editingSolutionIndex = -1;
+    addSolutionBtn.innerHTML = '<i class="fas fa-plus"></i> 添加';
+    cancelEditBtn.style.display = 'none';
+}
+
+function openSolutionModal(item) {
+    currentSolutionItemId = item.id;
+    solutionModalTitle.textContent = `售后方案 - ${item.orderId}`;
+    editingSolutionIndex = -1;
+    resetForm();
+    toggleForm(false);
+    toggleFormBtn.textContent = '<i class="fas fa-plus"></i> 新增方案';
+    toggleFormBtn.innerHTML = '<i class="fas fa-plus"></i> 新增方案';
+    renderSolutions(item);
+    solutionOverlay.classList.add('active');
+}
+
+function renderSolutions(item) {
+    const solutions = item.solutions || [];
+    if (solutions.length === 0) {
+        solutionList.innerHTML = '<p style="color:#94a3b8; text-align:center; padding:16px;">暂无方案</p>';
+        return;
+    }
+    const sorted = [...solutions].reverse();
+    let html = '';
+    sorted.forEach((s, index) => {
+        const originalIndex = solutions.length - 1 - index;
+        const time = formatDateTime(s.createdAt);
+        const trackingInfo = s.trackingNumber ? `运单: ${s.trackingNumber}` : '';
+        const statusInfo = s.trackingStatus ? `状态: ${s.trackingStatus}` : '';
+        const tags = [trackingInfo, statusInfo].filter(Boolean).join(' · ');
+        html += `<div class="solution-item" data-original-index="${originalIndex}">
+            <div class="left">
+                <div class="meta">
+                    <span>#${solutions.length - index} · ${time}</span>
+                    ${tags ? `<span class="tag">${tags}</span>` : ''}
+                </div>
+                <div class="content">${s.content}</div>
+            </div>
+            <div class="action">
+                <button class="btn btn-edit-solution" data-original-index="${originalIndex}"><i class="fas fa-pen"></i></button>
+            </div>
+        </div>`;
+    });
+    solutionList.innerHTML = html;
+
+    solutionList.querySelectorAll('.btn-edit-solution').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const idx = parseInt(this.dataset.originalIndex);
+            startEditSolution(idx);
+        });
+    });
+}
+
+function startEditSolution(index) {
+    const item = 售后数据.find(d => d.id === currentSolutionItemId);
+    if (!item) return;
+    const solution = item.solutions[index];
+    if (!solution) return;
+    editingSolutionIndex = index;
+    newSolutionContent.value = solution.content || '';
+    newSolutionTracking.value = solution.trackingNumber || '';
+    newSolutionTrackingStatus.value = solution.trackingStatus || '';
+    addSolutionBtn.innerHTML = '<i class="fas fa-save"></i> 更新';
+    cancelEditBtn.style.display = 'inline-flex';
+    toggleForm(true, true);
+    toggleFormBtn.style.display = 'none';
+}
+
+function cancelEdit() {
+    editingSolutionIndex = -1;
+    newSolutionContent.value = '';
+    newSolutionTracking.value = '';
+    newSolutionTrackingStatus.value = '';
+    addSolutionBtn.innerHTML = '<i class="fas fa-plus"></i> 添加';
+    cancelEditBtn.style.display = 'none';
+    toggleForm(false);
+    toggleFormBtn.innerHTML = '<i class="fas fa-plus"></i> 新增方案';
+}
+
+function closeSolutionModal() {
+    solutionOverlay.classList.remove('active');
+    currentSolutionItemId = null;
+    editingSolutionIndex = -1;
+    cancelEdit();
+}
+
+document.getElementById('solutionModalCloseBtn').addEventListener('click', closeSolutionModal);
+solutionOverlay.addEventListener('click', (e) => { if (e.target === solutionOverlay) closeSolutionModal(); });
+cancelEditBtn.addEventListener('click', cancelEdit);
+
+toggleFormBtn.addEventListener('click', function() {
+    if (formContainer.style.display === 'none') {
+        toggleForm(true, true);
+        this.style.display = 'none';
+        if (editingSolutionIndex !== -1) {
+            cancelEdit();
+        }
+        resetForm();
+        addSolutionBtn.innerHTML = '<i class="fas fa-plus"></i> 添加';
+        cancelEditBtn.style.display = 'none';
+        newSolutionContent.focus();
+    }
+});
+
+addSolutionBtn.addEventListener('click', function() {
+    const content = newSolutionContent.value.trim();
+    const trackingNumber = newSolutionTracking.value.trim();
+    const trackingStatus = newSolutionTrackingStatus.value;
+
+    if (!content) {
+        alert('请输入方案内容');
+        return;
+    }
+    if (currentSolutionItemId === null) {
+        alert('请先选择售后单');
+        return;
+    }
+    const item = 售后数据.find(d => d.id === currentSolutionItemId);
+    if (!item) {
+        alert('售后单不存在');
+        return;
+    }
+    if (!item.solutions) item.solutions = [];
+
+    if (editingSolutionIndex === -1) {
+        item.solutions.push({
+            content: content,
+            createdAt: new Date().toISOString(),
+            trackingNumber: trackingNumber,
+            trackingStatus: trackingStatus
+        });
+    } else {
+        const sol = item.solutions[editingSolutionIndex];
+        if (sol) {
+            sol.content = content;
+            sol.trackingNumber = trackingNumber;
+            sol.trackingStatus = trackingStatus;
+        }
+        editingSolutionIndex = -1;
+        addSolutionBtn.innerHTML = '<i class="fas fa-plus"></i> 添加';
+        cancelEditBtn.style.display = 'none';
+    }
+
+    saveData(售后数据);
+    renderSolutions(item);
+    newSolutionContent.value = '';
+    newSolutionTracking.value = '';
+    newSolutionTrackingStatus.value = '';
+    toggleForm(false);
+    toggleFormBtn.innerHTML = '<i class="fas fa-plus"></i> 新增方案';
+    render();
+});
+
+// ============================================================
+//  搜索、筛选、刷新
+// ============================================================
+document.getElementById('searchBtn').addEventListener('click', render);
+document.getElementById('searchInput').addEventListener('keyup', (e) => { if (e.key === 'Enter') render(); });
+document.getElementById('statusFilter').addEventListener('change', render);
+document.getElementById('shopFilter').addEventListener('change', render);
+document.getElementById('clearFilterBtn').addEventListener('click', function() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('shopFilter').value = '';
+    render();
+});
+document.getElementById('refreshBtn').addEventListener('click', render);
+
+// ============================================================
+//  Excel 导入导出
+// ============================================================
+document.getElementById('exportBtn').addEventListener('click', function() {
+    const headers = ['订单号', '店铺', '签收时间', '反馈时间', '是否过保', '是否过14天', '原因', '状态', '最新方案'];
+    const rows = 售后数据.map(item => {
+        const latestSolution = item.solutions && item.solutions.length > 0 ? item.solutions[item.solutions.length - 1].content : '';
+        return [
+            item.orderId,
+            item.shop,
+            item.signTime || '',
+            item.feedbackTime || '',
+            isOverdue(item.signTime) ? '已过保' : '保修中',
+            isOver14Days(item.signTime) ? '已过14天' : '14天内',
+            item.reason || '',
+            item.status,
+            latestSolution
+        ];
+    });
+    const wsData = [headers, ...rows];
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, '售后数据');
+    XLSX.writeFile(wb, `售后数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+});
+
+document.getElementById('importBtn').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        try {
+            const data = new Uint8Array(ev.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+            if (!jsonData || jsonData.length === 0) {
+                alert('导入失败：Excel 为空或格式不正确。');
+                return;
+            }
+
+            const imported = jsonData.map((row, index) => {
+                const orderId = (row['订单号'] || '').toString().trim();
+                const shop = (row['店铺'] || '').toString().trim();
+                const signTime = (row['签收时间'] || '').toString().trim();
+                const feedbackTime = (row['反馈时间'] || '').toString().trim();
+                const reason = (row['原因'] || '').toString().trim();
+                const status = (row['状态'] || '').toString().trim();
+                const solution = (row['最新方案'] || '').toString().trim();
+
+                if (!orderId || !shop || !signTime || !feedbackTime || !status) {
+                    throw new Error(`第 ${index+2} 行缺少必填字段（订单号、店铺、签收时间、反馈时间、状态）`);
+                }
+                const validStatus = ['待处理', '处理中', '已完成', '已拒绝'];
+                if (!validStatus.includes(status)) {
+                    throw new Error(`第 ${index+2} 行状态值无效，应为：${validStatus.join('、')}`);
+                }
+                return {
+                    id: nextId++,
+                    orderId,
+                    shop,
+                    signTime,
+                    feedbackTime,
+                    reason,
+                    status,
+                    solutions: solution ? [{ content: solution, createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '' }] : []
+                };
+            });
+
+            if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有数据？`)) {
+                售后数据 = imported;
+                nextId = 售后数据.reduce((max, d) => Math.max(max, d.id), 0) + 1;
+                saveData(售后数据);
+                render();
+                alert(`成功导入 ${imported.length} 条数据！`);
+            }
+        } catch (err) {
+            alert('导入失败：' + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+    this.value = '';
+});
+
+// ============================================================
+//  启动
+// ============================================================
+render();
+</script>
+</body>
+</html>
