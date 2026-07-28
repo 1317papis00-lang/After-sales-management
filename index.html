@@ -776,7 +776,7 @@
     </div>
 
     <!-- =============================== -->
-    <!-- TAB 2: 产品管理 -->
+    <!-- TAB 2: 产品管理（已增加上架状态） -->
     <!-- =============================== -->
     <div id="tab-products" class="tab-content">
         <div class="stats">
@@ -791,6 +791,7 @@
             <div class="filter-group">
                 <select id="prodShopFilter"><option value="">全部店铺</option></select>
                 <select id="prodBrandFilter"><option value="">全部品牌</option></select>
+                <select id="prodStatusFilter"><option value="">全部状态</option><option value="在售">在售</option><option value="已下架">已下架</option></select>
                 <button class="btn btn-outline btn-sm" id="prodClearFilter">清除</button>
                 <button class="btn btn-success btn-sm" id="prodExport">导出</button>
                 <button class="btn btn-warning btn-sm" id="prodImport">导入</button>
@@ -800,7 +801,7 @@
         </div>
         <div class="table-wrapper">
             <table>
-                <thead><tr><th>品牌</th><th>型号</th><th>所属店铺</th><th style="text-align:center;">操作</th></tr></thead>
+                <thead><tr><th>品牌</th><th>型号</th><th>所属店铺</th><th>上架状态</th><th style="text-align:center;">操作</th></tr></thead>
                 <tbody id="prodTableBody"></tbody>
             </table>
         </div>
@@ -824,14 +825,7 @@
                 <button id="scriptSearchBtn"><i class="fas fa-search"></i></button>
             </div>
             <div class="filter-group">
-                <select id="scriptCategoryFilter">
-                    <option value="">全部分类</option>
-                    <option value="售前">售前</option>
-                    <option value="售后">售后</option>
-                    <option value="物流">物流</option>
-                    <option value="产品">产品</option>
-                    <option value="其他">其他</option>
-                </select>
+                <select id="scriptCategoryFilter"><option value="">全部分类</option><option value="售前">售前</option><option value="售后">售后</option><option value="物流">物流</option><option value="产品">产品</option><option value="其他">其他</option></select>
                 <button class="btn btn-outline btn-sm" id="scriptClearFilter">清除</button>
                 <button class="btn btn-success btn-sm" id="scriptExport">导出</button>
                 <button class="btn btn-warning btn-sm" id="scriptImport">导入</button>
@@ -1735,22 +1729,29 @@ solutionOverlay.addEventListener('click', function(e) {
 });
 
 // ============================================================
-//  2. 产品管理
+//  2. 产品管理（含上架状态）
 // ============================================================
 const PROD_STORAGE_KEY = 'productData';
 let prodData = JSON.parse(localStorage.getItem(PROD_STORAGE_KEY) || '[]');
 function saveProdData(data) { localStorage.setItem(PROD_STORAGE_KEY, JSON.stringify(data)); }
 
 function renderProducts() {
+    // 兼容旧数据：没有status字段的默认设为"在售"
+    prodData.forEach(item => {
+        if (!item.status) item.status = '在售';
+    });
+
     const search = document.getElementById('prodSearch').value.trim().toLowerCase();
     const shopFilter = document.getElementById('prodShopFilter').value;
     const brandFilter = document.getElementById('prodBrandFilter').value;
+    const statusFilter = document.getElementById('prodStatusFilter').value;
 
     let filtered = prodData.filter(item => {
         const matchSearch = (item.brand + ' ' + item.model).toLowerCase().includes(search);
         const matchShop = shopFilter ? item.shop === shopFilter : true;
         const matchBrand = brandFilter ? item.brand === brandFilter : true;
-        return matchSearch && matchShop && matchBrand;
+        const matchStatus = statusFilter ? item.status === statusFilter : true;
+        return matchSearch && matchShop && matchBrand && matchStatus;
     });
 
     document.getElementById('prodTotal').textContent = prodData.length;
@@ -1782,10 +1783,12 @@ function renderProducts() {
 
     let html = '';
     filtered.forEach(item => {
+        const statusDisplay = item.status === '已下架' ? '<span style="color:#ef4444;">已下架</span>' : '<span style="color:#10b981;">在售</span>';
         html += `<tr>
             <td>${item.brand}</td>
             <td>${item.model}</td>
             <td>${item.shop}</td>
+            <td>${statusDisplay}</td>
             <td>
                 <div class="action-btns">
                     <button class="btn prod-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
@@ -1825,6 +1828,13 @@ function openProdForm(title, data) {
         <div class="form-group"><label>品牌 <span class="required">*</span></label><input type="text" id="prodFBrand" value="${data?data.brand:''}" placeholder="例如：Apple" required /></div>
         <div class="form-group"><label>型号 <span class="required">*</span></label><input type="text" id="prodFModel" value="${data?data.model:''}" placeholder="例如：iPhone 15 Pro" required /></div>
         <div class="form-group"><label>所属店铺 <span class="required">*</span></label><input type="text" id="prodFShop" value="${data?data.shop:''}" placeholder="填写店铺名称" required /></div>
+        <div class="form-group">
+            <label>上架状态</label>
+            <select id="prodFStatus">
+                <option value="在售" ${data && data.status==='在售'?'selected':''}>在售</option>
+                <option value="已下架" ${data && data.status==='已下架'?'selected':''}>已下架</option>
+            </select>
+        </div>
     `;
     document.getElementById('commonEditId').value = data ? data.id : '';
     modal.classList.add('active');
@@ -1834,12 +1844,13 @@ function openProdForm(title, data) {
         const brand = document.getElementById('prodFBrand').value.trim();
         const model = document.getElementById('prodFModel').value.trim();
         const shop = document.getElementById('prodFShop').value.trim();
+        const status = document.getElementById('prodFStatus').value;
         if (!brand || !model || !shop) { alert('请完整填写品牌、型号和店铺'); return; }
         if (id) {
             const idx = prodData.findIndex(d=>d.id===id);
-            if (idx!==-1) { prodData[idx] = { ...prodData[idx], brand, model, shop }; }
+            if (idx!==-1) { prodData[idx] = { ...prodData[idx], brand, model, shop, status }; }
         } else {
-            prodData.push({ id: prodNextId++, brand, model, shop });
+            prodData.push({ id: prodNextId++, brand, model, shop, status });
         }
         saveProdData(prodData);
         modal.classList.remove('active');
@@ -1852,15 +1863,17 @@ document.getElementById('prodSearchBtn').addEventListener('click', renderProduct
 document.getElementById('prodSearch').addEventListener('keyup', e=>{if(e.key==='Enter') renderProducts();});
 document.getElementById('prodShopFilter').addEventListener('change', renderProducts);
 document.getElementById('prodBrandFilter').addEventListener('change', renderProducts);
+document.getElementById('prodStatusFilter').addEventListener('change', renderProducts);
 document.getElementById('prodClearFilter').addEventListener('click', function() {
     document.getElementById('prodSearch').value = '';
     document.getElementById('prodShopFilter').value = '';
     document.getElementById('prodBrandFilter').value = '';
+    document.getElementById('prodStatusFilter').value = '';
     renderProducts();
 });
 document.getElementById('prodExport').addEventListener('click', function() {
-    const headers = ['品牌', '型号', '所属店铺'];
-    const rows = prodData.map(item => [item.brand, item.model, item.shop]);
+    const headers = ['品牌', '型号', '所属店铺', '上架状态'];
+    const rows = prodData.map(item => [item.brand, item.model, item.shop, item.status || '在售']);
     const wsData = [headers, ...rows];
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(wsData);
@@ -1883,8 +1896,10 @@ document.getElementById('prodFileInput').addEventListener('change', function(e) 
                 const brand = (row['品牌'] || '').toString().trim();
                 const model = (row['型号'] || '').toString().trim();
                 const shop = (row['所属店铺'] || '').toString().trim();
+                let status = (row['上架状态'] || '在售').toString().trim();
+                if (status !== '在售' && status !== '已下架') status = '在售';
                 if (!brand || !model || !shop) throw new Error('存在行缺少品牌、型号或店铺');
-                return { id: prodNextId++, brand, model, shop };
+                return { id: prodNextId++, brand, model, shop, status };
             });
             if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有产品？`)) {
                 prodData = imported;
@@ -2194,7 +2209,6 @@ function renderComplaints() {
     const shopFilter = document.getElementById('complaintShopFilter').value;
     const resolvedFilter = document.getElementById('complaintResolvedFilter').value;
 
-    // 更新店铺下拉
     const shopSet = new Set(complaintData.map(d=>d.shop).filter(Boolean));
     const shopSelect = document.getElementById('complaintShopFilter');
     const currentShop = shopSelect.value;
