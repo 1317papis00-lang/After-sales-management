@@ -922,20 +922,22 @@
     </div>
 
     <!-- =============================== -->
-    <!-- TAB 4: 投诉管理（独立板块） -->
+    <!-- TAB 4: 投诉管理（独立板块，增加店铺字段） -->
     <!-- =============================== -->
     <div id="tab-complaint" class="tab-content">
         <div class="stats">
             <div class="stat-card"><div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-info"><div class="stat-number" id="complaintTotal">0</div><div class="stat-label">总申诉</div></div></div>
             <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-store"></i></div><div class="stat-info"><div class="stat-number" id="complaintPlatforms">0</div><div class="stat-label">涉及平台</div></div></div>
+            <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-shop"></i></div><div class="stat-info"><div class="stat-number" id="complaintShops">0</div><div class="stat-label">涉及店铺</div></div></div>
         </div>
         <div class="toolbar">
             <div class="search-box">
-                <input type="text" id="complaintSearch" placeholder="搜索订单号、内容..." />
+                <input type="text" id="complaintSearch" placeholder="搜索订单号、店铺、内容..." />
                 <button id="complaintSearchBtn"><i class="fas fa-search"></i></button>
             </div>
             <div class="filter-group">
                 <select id="complaintPlatformFilter"><option value="">全部平台</option><option value="Allegro">Allegro</option><option value="Cdiscount">Cdiscount</option></select>
+                <select id="complaintShopFilter"><option value="">全部店铺</option></select>
                 <button class="btn btn-outline btn-sm" id="complaintClearFilter">清除</button>
                 <button class="btn btn-success btn-sm" id="complaintExport">导出</button>
                 <button class="btn btn-warning btn-sm" id="complaintImport">导入</button>
@@ -945,7 +947,7 @@
         </div>
         <div class="table-wrapper">
             <table>
-                <thead><tr><th>订单号</th><th>平台</th><th>申诉内容</th><th>创建时间</th><th style="text-align:center;">操作</th></tr></thead>
+                <thead><tr><th>订单号</th><th>店铺</th><th>平台</th><th>申诉内容</th><th>创建时间</th><th style="text-align:center;">操作</th></tr></thead>
                 <tbody id="complaintTableBody"></tbody>
             </table>
         </div>
@@ -989,6 +991,7 @@
         <form id="complaintForm">
             <input type="hidden" id="complaintEditId" />
             <div class="form-group"><label>订单号 <span class="required">*</span></label><input type="text" id="complaintFOrderId" placeholder="例如：ORD-20260727-001" required /></div>
+            <div class="form-group"><label>店铺 <span class="required">*</span></label><input type="text" id="complaintFShop" placeholder="例如：官方旗舰店" required /></div>
             <div class="form-group"><label>平台 <span class="required">*</span></label>
                 <select id="complaintFPlatform" required>
                     <option value="Allegro">Allegro</option>
@@ -2116,7 +2119,7 @@ document.getElementById('translateClearBtn').addEventListener('click', function(
 });
 
 // ============================================================
-//  5. 投诉管理（独立板块）
+//  5. 投诉管理（独立板块，增加店铺字段）
 // ============================================================
 const COMPLAINT_STORAGE_KEY = 'complaintData';
 let complaintData = JSON.parse(localStorage.getItem(COMPLAINT_STORAGE_KEY) || '[]');
@@ -2126,17 +2129,35 @@ let complaintNextId = complaintData.reduce((max,d)=>Math.max(max,d.id||0),0)+1;
 function renderComplaints() {
     const search = document.getElementById('complaintSearch').value.trim().toLowerCase();
     const platformFilter = document.getElementById('complaintPlatformFilter').value;
+    const shopFilter = document.getElementById('complaintShopFilter').value;
+
+    // 更新店铺下拉选项（动态）
+    const shopSet = new Set(complaintData.map(d=>d.shop).filter(Boolean));
+    const shopSelect = document.getElementById('complaintShopFilter');
+    const currentShop = shopSelect.value;
+    shopSelect.innerHTML = '<option value="">全部店铺</option>';
+    Array.from(shopSet).sort().forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        shopSelect.appendChild(opt);
+    });
+    shopSelect.value = currentShop;
 
     let filtered = complaintData.filter(item => {
-        const matchSearch = item.orderId.toLowerCase().includes(search) || item.content.toLowerCase().includes(search);
+        const matchSearch = item.orderId.toLowerCase().includes(search) ||
+                            item.shop.toLowerCase().includes(search) ||
+                            item.content.toLowerCase().includes(search);
         const matchPlatform = platformFilter ? item.platform === platformFilter : true;
-        return matchSearch && matchPlatform;
+        const matchShop = shopFilter ? item.shop === shopFilter : true;
+        return matchSearch && matchPlatform && matchShop;
     });
     filtered.sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
 
     document.getElementById('complaintTotal').textContent = complaintData.length;
     const platforms = new Set(complaintData.map(d=>d.platform).filter(Boolean));
     document.getElementById('complaintPlatforms').textContent = platforms.size;
+    document.getElementById('complaintShops').textContent = shopSet.size;
 
     const tbody = document.getElementById('complaintTableBody');
     const empty = document.getElementById('complaintEmpty');
@@ -2152,6 +2173,7 @@ function renderComplaints() {
     filtered.forEach(item => {
         html += `<tr>
             <td><strong>${item.orderId}</strong></td>
+            <td>${item.shop}</td>
             <td>${item.platform}</td>
             <td style="max-width:250px;word-break:break-word;">${item.content}</td>
             <td>${item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN', { hour12: false }) : '—'}</td>
@@ -2189,17 +2211,20 @@ document.getElementById('complaintAdd').addEventListener('click', function() { o
 document.getElementById('complaintSearchBtn').addEventListener('click', renderComplaints);
 document.getElementById('complaintSearch').addEventListener('keyup', e=>{if(e.key==='Enter') renderComplaints();});
 document.getElementById('complaintPlatformFilter').addEventListener('change', renderComplaints);
+document.getElementById('complaintShopFilter').addEventListener('change', renderComplaints);
 document.getElementById('complaintClearFilter').addEventListener('click', function() {
     document.getElementById('complaintSearch').value = '';
     document.getElementById('complaintPlatformFilter').value = '';
+    document.getElementById('complaintShopFilter').value = '';
     renderComplaints();
 });
 
 // 投诉导出
 document.getElementById('complaintExport').addEventListener('click', function() {
-    const headers = ['订单号', '平台', '申诉内容', '创建时间'];
+    const headers = ['订单号', '店铺', '平台', '申诉内容', '创建时间'];
     const rows = complaintData.map(item => [
         item.orderId,
+        item.shop,
         item.platform,
         item.content,
         item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN', { hour12: false }) : ''
@@ -2228,11 +2253,12 @@ document.getElementById('complaintFileInput').addEventListener('change', functio
             if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
             const imported = jsonData.map(row => {
                 const orderId = (row['订单号'] || '').toString().trim();
+                const shop = (row['店铺'] || '').toString().trim();
                 const platform = (row['平台'] || '').toString().trim();
                 const content = (row['申诉内容'] || '').toString().trim();
-                if (!orderId || !platform || !content) throw new Error('存在行缺少订单号、平台或申诉内容');
+                if (!orderId || !shop || !platform || !content) throw new Error('存在行缺少必填字段');
                 if (!['Allegro','Cdiscount'].includes(platform)) throw new Error(`平台 "${platform}" 无效，仅支持 Allegro 和 Cdiscount`);
-                return { id: complaintNextId++, orderId, platform, content, createdAt: new Date().toISOString() };
+                return { id: complaintNextId++, orderId, shop, platform, content, createdAt: new Date().toISOString() };
             });
             if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有申诉？`)) {
                 complaintData = imported;
@@ -2252,6 +2278,7 @@ function openComplaintForm(title, data) {
     document.getElementById('complaintModalTitle').textContent = title;
     document.getElementById('complaintEditId').value = data ? data.id : '';
     document.getElementById('complaintFOrderId').value = data ? data.orderId : '';
+    document.getElementById('complaintFShop').value = data ? data.shop : '';
     document.getElementById('complaintFPlatform').value = data ? data.platform : 'Allegro';
     document.getElementById('complaintFContent').value = data ? data.content : '';
     modal.classList.add('active');
@@ -2267,15 +2294,16 @@ document.getElementById('complaintForm').addEventListener('submit', function(e) 
     e.preventDefault();
     const id = parseInt(document.getElementById('complaintEditId').value) || 0;
     const orderId = document.getElementById('complaintFOrderId').value.trim();
+    const shop = document.getElementById('complaintFShop').value.trim();
     const platform = document.getElementById('complaintFPlatform').value;
     const content = document.getElementById('complaintFContent').value.trim();
 
-    if (!orderId || !content) { alert('请填写订单号和申诉内容'); return; }
+    if (!orderId || !shop || !content) { alert('请填写订单号、店铺和申诉内容'); return; }
     if (id) {
         const idx = complaintData.findIndex(d=>d.id===id);
-        if (idx!==-1) { complaintData[idx] = { ...complaintData[idx], orderId, platform, content }; }
+        if (idx!==-1) { complaintData[idx] = { ...complaintData[idx], orderId, shop, platform, content }; }
     } else {
-        complaintData.push({ id: complaintNextId++, orderId, platform, content, createdAt: new Date().toISOString() });
+        complaintData.push({ id: complaintNextId++, orderId, shop, platform, content, createdAt: new Date().toISOString() });
     }
     saveComplaintData(complaintData);
     document.getElementById('complaintModal').classList.remove('active');
