@@ -824,7 +824,14 @@
                 <button id="scriptSearchBtn"><i class="fas fa-search"></i></button>
             </div>
             <div class="filter-group">
-                <select id="scriptCategoryFilter"><option value="">全部分类</option><option value="售后">售后</option><option value="物流">物流</option><option value="产品">产品</option><option value="其他">其他</option></select>
+                <select id="scriptCategoryFilter">
+                    <option value="">全部分类</option>
+                    <option value="售前">售前</option>
+                    <option value="售后">售后</option>
+                    <option value="物流">物流</option>
+                    <option value="产品">产品</option>
+                    <option value="其他">其他</option>
+                </select>
                 <button class="btn btn-outline btn-sm" id="scriptClearFilter">清除</button>
                 <button class="btn btn-success btn-sm" id="scriptExport">导出</button>
                 <button class="btn btn-warning btn-sm" id="scriptImport">导入</button>
@@ -1974,7 +1981,13 @@ function openScriptForm(title, data) {
     const fields = document.getElementById('commonFormFields');
     fields.innerHTML = `
         <div class="form-group"><label>分类 <span class="required">*</span></label>
-            <select id="scriptFCategory" required><option value="售后" ${data && data.category==='售后'?'selected':''}>售后</option><option value="物流" ${data && data.category==='物流'?'selected':''}>物流</option><option value="产品" ${data && data.category==='产品'?'selected':''}>产品</option><option value="其他" ${data && data.category==='其他'?'selected':''}>其他</option></select>
+            <select id="scriptFCategory" required>
+                <option value="售前" ${data && data.category==='售前'?'selected':''}>售前</option>
+                <option value="售后" ${data && data.category==='售后'?'selected':''}>售后</option>
+                <option value="物流" ${data && data.category==='物流'?'selected':''}>物流</option>
+                <option value="产品" ${data && data.category==='产品'?'selected':''}>产品</option>
+                <option value="其他" ${data && data.category==='其他'?'selected':''}>其他</option>
+            </select>
         </div>
         <div class="form-group"><label>中文内容</label><textarea id="scriptFContentZh" rows="2">${data?data.contentZh:''}</textarea></div>
         <div class="form-group"><label>波兰语内容 (Polski)</label><textarea id="scriptFContentPl" rows="2">${data?data.contentPl:''}</textarea></div>
