@@ -1111,6 +1111,48 @@
             padding: 40px 20px;
         }
 
+        /* ===== 话术展开/收起样式 ===== */
+        .script-cell-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+            width: 100%;
+        }
+        .script-cell-wrapper .script-text {
+            flex: 1;
+            word-break: break-word;
+            max-height: 1.6em; /* 默认只显示一行 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: max-height 0.3s ease, white-space 0.3s ease;
+        }
+        .script-cell-wrapper .script-text.expanded {
+            max-height: none;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+        }
+        .script-cell-wrapper .script-actions {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding-top: 2px;
+        }
+        .script-cell-wrapper .script-actions .toggle-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 2px;
+        }
+        .script-cell-wrapper .script-actions .toggle-btn:hover {
+            color: #4f6af5;
+        }
+
         /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             .script-layout {
@@ -1340,7 +1382,7 @@
             </div>
 
             <!-- =============================== -->
-            <!-- TAB 3: 话术管理 -->
+            <!-- TAB 3: 话术管理（带展开/收起） -->
             <!-- =============================== -->
             <div id="tab-scripts" class="tab-content">
                 <div class="stats">
@@ -1784,6 +1826,22 @@
                     btnElement.classList.remove('copied');
                 }, 1500);
             });
+        }
+
+        // 话术展开/收起切换
+        function toggleScriptExpand(btn) {
+            const textSpan = btn.closest('.script-cell-wrapper').querySelector('.script-text');
+            if (!textSpan) return;
+            const isExpanded = textSpan.classList.contains('expanded');
+            if (isExpanded) {
+                textSpan.classList.remove('expanded');
+                btn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+                btn.title = '展开';
+            } else {
+                textSpan.classList.add('expanded');
+                btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+                btn.title = '收起';
+            }
         }
 
         // ============================================================
@@ -2752,7 +2810,7 @@
         });
 
         // ============================================================
-        //  3. 话术管理
+        //  3. 话术管理（带展开/收起）
         // ============================================================
         const SCRIPT_STORAGE_KEY = 'scriptData';
         let scriptData = JSON.parse(localStorage.getItem(SCRIPT_STORAGE_KEY) || '[]');
@@ -2798,13 +2856,29 @@
                 const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentFr)}', this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
                 const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentEn)}', this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
 
+                // 构建每个语言列的展开/收起容器
+                const buildCell = (content, btnHtml) => {
+                    const hasContent = content && content.trim() !== '';
+                    if (!hasContent) return `<span style="color:#94a3b8;">—</span>`;
+                    // 判断内容是否可能超过一行（粗略判断：长度超过30或包含换行）
+                    const likelyLong = content.length > 30 || content.includes('\n');
+                    const expandBtn = likelyLong ? `<button class="toggle-btn" onclick="toggleScriptExpand(this)" title="展开"><i class="fas fa-chevron-down"></i></button>` : '';
+                    return `<div class="script-cell-wrapper">
+                        <span class="script-text">${content}</span>
+                        <span class="script-actions">
+                            ${btnHtml}
+                            ${expandBtn}
+                        </span>
+                    </div>`;
+                };
+
                 html += `<tr>
                     <td>${seq}</td>
                     <td>${item.category || '其他'}</td>
                     <td style="max-width:200px;word-break:break-word;">${item.contentZh || ''}</td>
-                    <td style="max-width:200px;word-break:break-word;">${item.contentPl || ''} ${plBtn}</td>
-                    <td style="max-width:200px;word-break:break-word;">${item.contentFr || ''} ${frBtn}</td>
-                    <td style="max-width:200px;word-break:break-word;">${item.contentEn || ''} ${enBtn}</td>
+                    <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentPl, plBtn)}</td>
+                    <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentFr, frBtn)}</td>
+                    <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentEn, enBtn)}</td>
                     <td>
                         <div class="action-btns">
                             <button class="btn script-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
