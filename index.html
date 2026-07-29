@@ -1732,37 +1732,8 @@
 
         // 复制订单号
         function copyOrderId(orderId, btnElement) {
-            // 复制文本内容
-            function copyText(text, btnElement) {
-                if (!text) return;
-                navigator.clipboard.writeText(text).then(() => {
-                    const originalHtml = btnElement.innerHTML;
-                    btnElement.innerHTML = '<i class="fas fa-check"></i>';
-                    btnElement.classList.add('copied');
-                    setTimeout(() => {
-                        btnElement.innerHTML = originalHtml;
-                        btnElement.classList.remove('copied');
-                    }, 1500);
-                }).catch(() => {
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    ta.remove();
-                    const originalHtml = btnElement.innerHTML;
-                    btnElement.innerHTML = '<i class="fas fa-check"></i>';
-                    btnElement.classList.add('copied');
-                    setTimeout(() => {
-                        btnElement.innerHTML = originalHtml;
-                        btnElement.classList.remove('copied');
-                    }, 1500);
-                });
-            }
-            // 复制文本内容
-        function copyText(text, btnElement) {
-            if (!text) return;
-            navigator.clipboard.writeText(text).then(() => {
+            if (!orderId) return;
+            navigator.clipboard.writeText(orderId).then(() => {
                 const originalHtml = btnElement.innerHTML;
                 btnElement.innerHTML = '<i class="fas fa-check"></i>';
                 btnElement.classList.add('copied');
@@ -1772,7 +1743,7 @@
                 }, 1500);
             }).catch(() => {
                 const ta = document.createElement('textarea');
-                ta.value = text;
+                ta.value = orderId;
                 document.body.appendChild(ta);
                 ta.select();
                 document.execCommand('copy');
@@ -1786,8 +1757,11 @@
                 }, 1500);
             });
         }
-            if (!orderId) return;
-            navigator.clipboard.writeText(orderId).then(() => {
+
+        // 复制文本内容（用于话术）
+        function copyText(text, btnElement) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
                 const originalHtml = btnElement.innerHTML;
                 btnElement.innerHTML = '<i class="fas fa-check"></i>';
                 btnElement.classList.add('copied');
@@ -1797,7 +1771,7 @@
                 }, 1500);
             }).catch(() => {
                 const ta = document.createElement('textarea');
-                ta.value = orderId;
+                ta.value = text;
                 document.body.appendChild(ta);
                 ta.select();
                 document.execCommand('copy');
@@ -2805,6 +2779,7 @@
 
             const tbody = document.getElementById('scriptTableBody');
             const empty = document.getElementById('scriptEmpty');
+
             if (filtered.length === 0) {
                 tbody.innerHTML = '';
                 empty.classList.remove('hidden');
@@ -2816,22 +2791,20 @@
             let html = '';
             filtered.forEach((item, index) => {
                 const seq = index + 1;
+                const escapeQuote = (str) => (str || '').replace(/"/g, '&quot;');
+
+                // 复制按钮：仅在内容非空时显示
+                const plBtn = item.contentPl ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentPl)}', this)" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
+                const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentFr)}', this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
+                const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentEn)}', this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
+
                 html += `<tr>
                     <td>${seq}</td>
                     <td>${item.category || '其他'}</td>
                     <td style="max-width:200px;word-break:break-word;">${item.contentZh || ''}</td>
-                    <td style="max-width:200px;word-break:break-word;">
-                    ${item.contentPl || ''}
-                    <button class="copy-order-btn" onclick="copyText('${(item.contentPl||'').replace(/"/g,'&quot;')}', this)" title="复制波兰语"><i class="fas fa-copy"></i></button>
-                    </td>
-                    <td style="max-width:200px;word-break:break-word;">
-                        ${item.contentFr || ''}
-                        <button class="copy-order-btn" onclick="copyText('${(item.contentFr||'').replace(/"/g,'&quot;')}', this)" title="复制法语"><i class="fas fa-copy"></i></button>
-                    </td>
-                    <td style="max-width:200px;word-break:break-word;">
-                        ${item.contentEn || ''}
-                        <button class="copy-order-btn" onclick="copyText('${(item.contentEn||'').replace(/"/g,'&quot;')}', this)" title="复制英语"><i class="fas fa-copy"></i></button>
-                    </td>
+                    <td style="max-width:200px;word-break:break-word;">${item.contentPl || ''} ${plBtn}</td>
+                    <td style="max-width:200px;word-break:break-word;">${item.contentFr || ''} ${frBtn}</td>
+                    <td style="max-width:200px;word-break:break-word;">${item.contentEn || ''} ${enBtn}</td>
                     <td>
                         <div class="action-btns">
                             <button class="btn script-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
@@ -2840,6 +2813,7 @@
                     </td>
                 </tr>`;
             });
+
             tbody.innerHTML = html;
             document.getElementById('scriptRecordInfo').textContent = `共 ${filtered.length} 条`;
 
@@ -2850,6 +2824,7 @@
                     if (item) openScriptForm('编辑话术', item);
                 });
             });
+
             tbody.querySelectorAll('.script-delete').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (confirm('确定删除？')) {
