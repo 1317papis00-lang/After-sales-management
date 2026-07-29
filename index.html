@@ -1800,7 +1800,6 @@
         //  拖拽调整列宽
         // ============================================================
         (function initResize() {
-            const layout = document.getElementById('prodLayout');
             const panel1 = document.getElementById('prodShopPanel');
             const panel2 = document.getElementById('prodBrandPanel');
             const panel3 = document.getElementById('prodProductPanel');
@@ -1831,15 +1830,14 @@
                 const delta = clientX - startX;
 
                 if (activeDivider === divider1) {
-                    const newWidth1 = Math.min(Math.max(startWidth1 + delta, 120), 350);
-                    const newWidth2 = Math.min(Math.max(startWidth2 - delta, 120), 350);
-                    if (startWidth2 - delta < 120) return;
+                    // 只调整店铺列（panel1），品牌列保持不动
+                    const newWidth1 = Math.min(Math.max(startWidth1 + delta, 120), 280);
                     panel1.style.width = newWidth1 + 'px';
-                    panel2.style.width = newWidth2 + 'px';
                 } else if (activeDivider === divider2) {
-                    const newWidth2 = Math.min(Math.max(startWidth2 + delta, 120), 350);
-                    if (panel3.offsetWidth - delta < 300) return;
+                    // 只调整品牌列（panel2），车型列自动适应
+                    const newWidth2 = Math.min(Math.max(startWidth2 + delta, 120), 400);
                     panel2.style.width = newWidth2 + 'px';
+                    // 车型列自动适应剩余空间（flex:1 自动处理）
                 }
             }
 
@@ -1853,6 +1851,7 @@
                 }
             }
 
+            // 鼠标事件
             divider1.addEventListener('mousedown', function(e) {
                 startDrag(e, this, panel1, panel2);
             });
@@ -1863,6 +1862,7 @@
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', endDrag);
 
+            // 触摸事件
             divider1.addEventListener('touchstart', function(e) {
                 startDrag(e, this, panel1, panel2);
             }, { passive: true });
@@ -1878,13 +1878,12 @@
             }, { passive: false });
             document.addEventListener('touchend', endDrag);
 
+            // 双击重置
             divider1.addEventListener('dblclick', function() {
                 panel1.style.width = '180px';
-                panel2.style.width = '180px';
             });
             divider2.addEventListener('dblclick', function() {
                 panel2.style.width = '180px';
-                panel3.style.flex = '1';
             });
         })();
 
