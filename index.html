@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -29,8 +28,6 @@
             padding: 28px 32px 36px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
         }
-
-        /* ===== 密码锁 ===== */
         #passwordOverlay {
             position: fixed;
             inset: 0;
@@ -89,8 +86,6 @@
             display: none;
             margin-top: 4px;
         }
-
-        /* ===== 头部 ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -138,8 +133,6 @@
             flex-wrap: wrap;
             align-items: center;
         }
-
-        /* ===== 按钮 ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -210,8 +203,6 @@
             font-size: 11px;
             border-radius: 8px;
         }
-
-        /* ===== 复制按钮 ===== */
         .copy-order-btn {
             background: none;
             border: none;
@@ -220,7 +211,7 @@
             padding: 0 4px;
             font-size: 13px;
             transition: 0.15s;
-            margin-left: 4px;
+            margin-left: 2px;
         }
         .copy-order-btn:hover {
             color: #4f6af5;
@@ -228,8 +219,6 @@
         .copy-order-btn.copied {
             color: #10b981;
         }
-
-        /* ===== Tab切换 ===== */
         .tabs {
             display: flex;
             gap: 4px;
@@ -264,15 +253,12 @@
             font-weight: 600;
             background: transparent;
         }
-
         .tab-content {
             display: none;
         }
         .tab-content.active {
             display: block;
         }
-
-        /* ===== 统计卡片 ===== */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -334,8 +320,6 @@
             font-size: 13px;
             color: #64748b;
         }
-
-        /* ===== 工具栏 ===== */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -388,7 +372,6 @@
         .search-box button:hover {
             background: #3b56e0;
         }
-
         .filter-group {
             display: flex;
             gap: 10px;
@@ -425,8 +408,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-
-        /* ===== 表格 ===== */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 16px;
@@ -467,7 +448,6 @@
             padding: 12px 14px;
             vertical-align: middle;
         }
-
         .action-btns {
             display: flex;
             gap: 4px;
@@ -488,7 +468,6 @@
             transform: none;
             box-shadow: none;
         }
-
         .empty-state {
             text-align: center;
             padding: 56px 20px;
@@ -512,8 +491,6 @@
         .hidden {
             display: none !important;
         }
-
-        /* ===== AI工具折叠面板 ===== */
         .ai-panel-container {
             max-width: 900px;
             margin: 0 auto;
@@ -644,8 +621,6 @@
             color: #4f6af5;
             text-decoration: underline;
         }
-
-        /* ===== 话术左侧导航布局 ===== */
         .script-layout {
             display: flex;
             gap: 24px;
@@ -689,8 +664,6 @@
             text-align: center;
             font-size: 15px;
         }
-
-        /* 树形导航样式 */
         .script-sidebar .nav-group {
             width: 100%;
         }
@@ -732,7 +705,6 @@
             background: #eef2ff;
             font-weight: 600;
         }
-
         .script-content {
             flex: 1;
             min-width: 0;
@@ -743,8 +715,6 @@
         .script-content .panel-page.active {
             display: block;
         }
-
-        /* ===== 弹窗 ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -865,8 +835,6 @@
         .save-hint i {
             color: #10b981;
         }
-
-        /* ===== 方案列表 ===== */
         .solution-list {
             max-height: 320px;
             overflow-y: auto;
@@ -937,14 +905,11 @@
         .solution-item:last-child {
             margin-bottom: 0;
         }
-
         .solution-form-section {
             border-top: 1px solid #e2e8f0;
             padding-top: 18px;
             margin-top: 8px;
         }
-
-        /* ===== 产品三栏布局（可拖拽） ===== */
         .prod-layout {
             display: flex;
             gap: 0;
@@ -955,31 +920,26 @@
             background: #fff;
             position: relative;
         }
-
         .prod-panel {
             display: flex;
             flex-direction: column;
             overflow: hidden;
             flex-shrink: 0;
         }
-
         #prodShopPanel {
             width: 180px;
             min-width: 120px;
             max-width: 350px;
         }
-
         #prodBrandPanel {
             width: 180px;
             min-width: 120px;
             max-width: 350px;
         }
-
         #prodProductPanel {
             flex: 1;
             min-width: 300px;
         }
-
         .prod-panel-header {
             display: flex;
             justify-content: space-between;
@@ -993,7 +953,6 @@
             flex-shrink: 0;
             min-height: 44px;
         }
-
         .prod-panel-header .prod-panel-count {
             background: #e2e8f0;
             padding: 0 10px;
@@ -1002,27 +961,21 @@
             font-weight: 500;
             color: #64748b;
         }
-
         .prod-panel-body {
             flex: 1;
             overflow-y: auto;
             padding: 6px 0;
         }
-
         .prod-panel-body::-webkit-scrollbar {
             width: 4px;
         }
-
         .prod-panel-body::-webkit-scrollbar-thumb {
             background: #d1d5db;
             border-radius: 4px;
         }
-
         .prod-panel-body::-webkit-scrollbar-track {
             background: transparent;
         }
-
-        /* 店铺/品牌列表项 */
         .prod-nav-item {
             padding: 8px 16px;
             cursor: pointer;
@@ -1038,32 +991,27 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
         .prod-nav-item:hover {
             background: #f1f5f9;
             color: #0f172a;
         }
-
         .prod-nav-item.active {
             background: #eef2ff;
             color: #4f6af5;
             border-left-color: #4f6af5;
             font-weight: 500;
         }
-
         .prod-nav-item .nav-icon {
             width: 18px;
             text-align: center;
             font-size: 14px;
             flex-shrink: 0;
         }
-
         .prod-nav-item .nav-name {
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
         .prod-nav-item .nav-badge {
             background: #e2e8f0;
             padding: 0 8px;
@@ -1072,8 +1020,6 @@
             color: #64748b;
             flex-shrink: 0;
         }
-
-        /* 拖拽手柄 */
         .prod-divider {
             width: 4px;
             background: #eef2f6;
@@ -1082,12 +1028,10 @@
             transition: background 0.15s;
             position: relative;
         }
-
         .prod-divider:hover,
         .prod-divider.active {
             background: #4f6af5;
         }
-
         .prod-divider::after {
             content: '';
             position: absolute;
@@ -1096,22 +1040,16 @@
             right: -4px;
             bottom: 0;
         }
-
-        /* 右侧车型表格适配 */
         #prodProductPanel .prod-panel-body {
             padding: 0;
         }
-
         #prodProductPanel .table-wrapper {
             border: none;
             border-radius: 0;
         }
-
         #prodProductPanel .empty-state {
             padding: 40px 20px;
         }
-
-        /* ===== 话术展开/收起样式 ===== */
         .script-cell-wrapper {
             display: flex;
             align-items: flex-start;
@@ -1122,7 +1060,7 @@
         .script-cell-wrapper .script-text {
             flex: 1;
             word-break: break-word;
-            max-height: 2.8em; /* 大约两行 */
+            max-height: 2.8em;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -1140,15 +1078,6 @@
         .script-cell-wrapper .script-actions {
             flex-shrink: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding-top: 2px;
-        }
-        .script-cell-wrapper .script-actions-left {
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 2px;
             padding-top: 2px;
@@ -1158,14 +1087,14 @@
             border: none;
             color: #94a3b8;
             cursor: pointer;
-            font-size: 12px;
-            padding: 0 2px;
+            font-size: 13px;
+            padding: 0 4px;
+            transition: 0.15s;
+            margin-left: 2px;
         }
         .script-cell-wrapper .script-actions .toggle-btn:hover {
             color: #4f6af5;
         }
-
-        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             .script-layout {
                 flex-direction: column;
@@ -1248,7 +1177,6 @@
 </head>
 <body>
 
-    <!-- ===== 密码锁 ===== -->
     <div id="passwordOverlay">
         <h2>📦 adulting is hard🫠🌧️</h2>
         <p class="sub">请输入访问密码</p>
@@ -1257,11 +1185,9 @@
         <p class="wrong" id="wrongMsg">密码错误，请重试</p>
     </div>
 
-    <!-- ===== 主内容 ===== -->
     <div id="mainContent" style="display:none;">
 
         <div class="container">
-            <!-- 头部 -->
             <div class="header">
                 <div class="header-left">
                     <div class="icon"><i class="fas fa-boxes"></i></div>
@@ -1275,7 +1201,6 @@
                 </div>
             </div>
 
-            <!-- ===== 主Tab切换 ===== -->
             <div class="tabs">
                 <button class="tab-btn active" data-tab="afterSales"><i class="fas fa-headset"></i> 售后管理</button>
                 <button class="tab-btn" data-tab="products"><i class="fas fa-box"></i> 产品管理</button>
@@ -1283,9 +1208,7 @@
                 <button class="tab-btn" data-tab="complaint"><i class="fas fa-exclamation-triangle"></i> 投诉管理</button>
             </div>
 
-            <!-- =============================== -->
-            <!-- TAB 1: 售后管理 -->
-            <!-- =============================== -->
+            <!-- ===== TAB 1: 售后管理 ===== -->
             <div id="tab-afterSales" class="tab-content active">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list-ul"></i></div><div class="stat-info"><div class="stat-number" id="asTotal">0</div><div class="stat-label">总售后</div></div></div>
@@ -1321,16 +1244,12 @@
                 </div>
             </div>
 
-            <!-- =============================== -->
-            <!-- TAB 2: 产品管理（三栏可拖拽） -->
-            <!-- =============================== -->
+            <!-- ===== TAB 2: 产品管理 ===== -->
             <div id="tab-products" class="tab-content">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-box"></i></div><div class="stat-info"><div class="stat-number" id="prodTotal">0</div><div class="stat-label">总产品</div></div></div>
                     <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-store"></i></div><div class="stat-info"><div class="stat-number" id="prodShops">0</div><div class="stat-label">涉及店铺</div></div></div>
                 </div>
-
-                <!-- 工具栏 -->
                 <div class="toolbar">
                     <div class="search-box">
                         <input type="text" id="prodSearch" placeholder="搜索品牌、型号、店铺..." />
@@ -1343,10 +1262,7 @@
                         <button class="btn btn-primary btn-sm" id="prodAdd"><i class="fas fa-plus"></i> 添加产品</button>
                     </div>
                 </div>
-
-                <!-- 三栏可拖拽布局 -->
                 <div class="prod-layout" id="prodLayout">
-                    <!-- 左侧：店铺列表 -->
                     <div class="prod-panel" id="prodShopPanel">
                         <div class="prod-panel-header">
                             <span><i class="fas fa-store"></i> 店铺</span>
@@ -1354,11 +1270,7 @@
                         </div>
                         <div class="prod-panel-body" id="shopList"></div>
                     </div>
-
-                    <!-- 拖拽手柄 1 -->
                     <div class="prod-divider" id="divider1"></div>
-
-                    <!-- 中间：品牌列表 -->
                     <div class="prod-panel" id="prodBrandPanel">
                         <div class="prod-panel-header">
                             <span><i class="fas fa-tag"></i> 品牌</span>
@@ -1366,11 +1278,7 @@
                         </div>
                         <div class="prod-panel-body" id="brandList"></div>
                     </div>
-
-                    <!-- 拖拽手柄 2 -->
                     <div class="prod-divider" id="divider2"></div>
-
-                    <!-- 右侧：车型列表 -->
                     <div class="prod-panel" id="prodProductPanel">
                         <div class="prod-panel-header">
                             <span><i class="fas fa-box"></i> 车型</span>
@@ -1387,15 +1295,12 @@
                         </div>
                     </div>
                 </div>
-
                 <div style="display:flex; justify-content:space-between; margin-top:14px; font-size:13px; color:#94a3b8;">
                     <span id="prodRecordInfo">共 0 条</span>
                 </div>
             </div>
 
-            <!-- =============================== -->
-            <!-- TAB 3: 话术管理（带展开/收起） -->
-            <!-- =============================== -->
+            <!-- ===== TAB 3: 话术管理 ===== -->
             <div id="tab-scripts" class="tab-content">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-comment-dots"></i></div><div class="stat-info"><div class="stat-number" id="scriptTotal">0</div><div class="stat-label">总话术</div></div></div>
@@ -1415,8 +1320,6 @@
                         <button class="btn btn-primary btn-sm" id="scriptAdd"><i class="fas fa-plus"></i> 添加话术</button>
                     </div>
                 </div>
-
-                <!-- 左侧导航 + 右侧内容 -->
                 <div class="script-layout">
                     <div class="script-sidebar">
                         <button class="nav-item active" data-page="list"><i class="fas fa-list"></i> 话术列表</button>
@@ -1431,9 +1334,7 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="script-content">
-                        <!-- 话术列表 -->
                         <div class="panel-page active" id="page-list">
                             <div class="table-wrapper">
                                 <table>
@@ -1446,8 +1347,6 @@
                                 <span id="scriptRecordInfo">共 0 条</span>
                             </div>
                         </div>
-
-                        <!-- AI润色 -->
                         <div class="panel-page" id="page-ai-polish">
                             <div class="ai-panel-container">
                                 <div class="ai-panel" style="border:none; background:transparent; padding:0;">
@@ -1476,8 +1375,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 语言转换 -->
                         <div class="panel-page" id="page-ai-translate">
                             <div class="ai-panel-container">
                                 <div class="ai-panel" style="border:none; background:transparent; padding:0;">
@@ -1513,9 +1410,7 @@
                 </div>
             </div>
 
-            <!-- =============================== -->
-            <!-- TAB 4: 投诉管理 -->
-            <!-- =============================== -->
+            <!-- ===== TAB 4: 投诉管理 ===== -->
             <div id="tab-complaint" class="tab-content">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-info"><div class="stat-number" id="complaintTotal">0</div><div class="stat-label">总申诉</div></div></div>
@@ -1551,9 +1446,9 @@
                 </div>
             </div>
 
-        </div><!-- end container -->
+        </div>
 
-        <!-- ===== 修改密码弹窗 ===== -->
+        <!-- ===== 弹窗 ===== -->
         <div class="modal-overlay" id="changePasswordModal">
             <div class="modal">
                 <div class="modal-header"><h2>修改密码</h2><button class="modal-close" id="changePwCloseBtn">&times;</button></div>
@@ -1566,7 +1461,6 @@
             </div>
         </div>
 
-        <!-- ===== 共用弹窗 ===== -->
         <div class="modal-overlay" id="commonModal">
             <div class="modal">
                 <div class="modal-header"><h2 id="commonModalTitle">标题</h2><button class="modal-close" id="commonModalClose">&times;</button></div>
@@ -1578,7 +1472,6 @@
             </div>
         </div>
 
-        <!-- ===== 投诉管理弹窗 ===== -->
         <div class="modal-overlay" id="complaintModal">
             <div class="modal">
                 <div class="modal-header"><h2 id="complaintModalTitle">添加申诉</h2><button class="modal-close" id="complaintModalClose">&times;</button></div>
@@ -1605,7 +1498,6 @@
             </div>
         </div>
 
-        <!-- ===== 方案管理弹窗 ===== -->
         <div class="modal-overlay" id="solutionModalOverlay">
             <div class="modal">
                 <div class="modal-header">
@@ -1653,7 +1545,7 @@
             </div>
         </div>
 
-    </div><!-- end mainContent -->
+    </div>
 
     <script>
         // ============================================================
@@ -1784,7 +1676,6 @@
             return `<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:30px;font-size:12px;font-weight:500;background:${bg};color:${color};"><span style="width:5px;height:5px;border-radius:50%;display:inline-block;background:${color};"></span>${st}</span>`;
         }
 
-        // 复制订单号
         function copyOrderId(orderId, btnElement) {
             if (!orderId) return;
             navigator.clipboard.writeText(orderId).then(() => {
@@ -1812,7 +1703,6 @@
             });
         }
 
-        // 复制文本内容（用于话术）
         function copyText(text, btnElement) {
             if (!text) return;
             navigator.clipboard.writeText(text).then(() => {
@@ -1840,7 +1730,6 @@
             });
         }
 
-        // 话术展开/收起切换
         function toggleScriptExpand(btn) {
             const wrapper = btn.closest('.script-cell-wrapper');
             if (!wrapper) return;
@@ -1856,7 +1745,6 @@
                 btn.innerHTML = '<i class="fas fa-chevron-up"></i>';
                 btn.title = '收起';
             }
-            // 重新计算高度（如果父容器需要）
         }
 
         // ============================================================
@@ -1892,11 +1780,11 @@
         document.querySelectorAll('.script-sidebar .nav-item:not(.nav-parent)').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.script-sidebar .nav-item').forEach(n => n.classList.remove(
-                'active'));
+                    'active'));
                 this.classList.add('active');
                 const page = this.dataset.page;
                 document.querySelectorAll('.script-content .panel-page').forEach(p => p.classList.remove(
-                'active'));
+                    'active'));
                 document.getElementById('page-' + page).classList.add('active');
                 if (page === 'list') renderScripts();
             });
@@ -1965,7 +1853,6 @@
                 }
             }
 
-            // 鼠标事件
             divider1.addEventListener('mousedown', function(e) {
                 startDrag(e, this, panel1, panel2);
             });
@@ -1976,7 +1863,6 @@
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', endDrag);
 
-            // 触摸事件
             divider1.addEventListener('touchstart', function(e) {
                 startDrag(e, this, panel1, panel2);
             }, { passive: true });
@@ -1992,7 +1878,6 @@
             }, { passive: false });
             document.addEventListener('touchend', endDrag);
 
-            // 双击重置列宽
             divider1.addEventListener('dblclick', function() {
                 panel1.style.width = '180px';
                 panel2.style.width = '180px';
@@ -2519,7 +2404,7 @@
         });
 
         // ============================================================
-        //  2. 产品管理（三栏导航 + 可拖拽）
+        //  2. 产品管理
         // ============================================================
         const PROD_STORAGE_KEY = 'productData';
         let prodData = JSON.parse(localStorage.getItem(PROD_STORAGE_KEY) || '[]');
@@ -2825,7 +2710,7 @@
         });
 
         // ============================================================
-        //  3. 话术管理（带展开/收起，中文列加宽）
+        //  3. 话术管理（展开按钮在右侧，统一风格）
         // ============================================================
         const SCRIPT_STORAGE_KEY = 'scriptData';
         let scriptData = JSON.parse(localStorage.getItem(SCRIPT_STORAGE_KEY) || '[]');
@@ -2866,25 +2751,25 @@
                 const seq = index + 1;
                 const escapeQuote = (str) => (str || '').replace(/"/g, '&quot;');
 
-                // 构建单元格内容（包含展开/收起功能）
+                // 构建单元格：文本 + [展开按钮] + [复制按钮]
                 const buildCell = (content, btnHtml, isChinese = false) => {
                     const hasContent = content && content.trim() !== '';
                     if (!hasContent) return `<span style="color:#94a3b8;">—</span>`;
-                    // 判断是否可能超过两行：长度 > 40 或包含换行
                     const likelyLong = content.length > 40 || content.includes('\n');
+                    // 展开按钮（使用与复制按钮相同的样式，放在文本右侧）
                     const expandBtn = likelyLong ?
-                        `<button class="toggle-btn" onclick="toggleScriptExpand(this)" title="展开"><i class="fas fa-chevron-down"></i></button>` :
+                        `<button class="copy-order-btn toggle-btn" onclick="toggleScriptExpand(this)" title="展开"><i class="fas fa-chevron-down"></i></button>` :
                         '';
-                    // 中文列宽度更大，其他语言列标准宽度
                     const maxWidthStyle = isChinese ? 'max-width:280px;' : 'max-width:200px;';
                     return `<div class="script-cell-wrapper" style="${maxWidthStyle}">
-                        <span class="script-actions-left">${expandBtn}</span>
                         <span class="script-text">${content}</span>
-                        <span class="script-actions">${btnHtml}</span>
+                        <span class="script-actions">
+                            ${expandBtn}
+                            ${btnHtml}
+                        </span>
                     </div>`;
                 };
 
-                // 构建各列
                 const plBtn = item.contentPl ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentPl)}', this)" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
                 const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentFr)}', this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
                 const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentEn)}', this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
