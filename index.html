@@ -1891,7 +1891,13 @@ document.getElementById('prodFileInput').addEventListener('change', function(e) 
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
-            if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
+
+            if (!jsonData || jsonData.length === 0) {
+                alert('导入失败：Excel 为空或格式不正确。');
+                return;
+            }
+
+            // 构建导入数据数组
             const imported = jsonData.map(row => {
                 const brand = (row['品牌'] || '').toString().trim();
                 const model = (row['型号'] || '').toString().trim();
@@ -1899,16 +1905,40 @@ document.getElementById('prodFileInput').addEventListener('change', function(e) 
                 let status = (row['上架状态'] || '在售').toString().trim();
                 if (status !== '在售' && status !== '已下架') status = '在售';
                 if (!brand || !model || !shop) throw new Error('存在行缺少品牌、型号或店铺');
-                return { id: prodNextId++, brand, model, shop, status };
+                return { brand, model, shop, status };
             });
-            if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有产品？`)) {
-                prodData = imported;
-                prodNextId = prodData.reduce((max,d)=>Math.max(max,d.id),0)+1;
-                saveProdData(prodData);
-                renderProducts();
-                alert(`成功导入 ${imported.length} 条产品！`);
-            }
-        } catch(err) { alert('导入失败：'+err.message); }
+
+            // 合并逻辑：按 brand+model+shop 作为唯一键
+            let addedCount = 0;
+            let updatedCount = 0;
+
+            imported.forEach(importItem => {
+                const existingIndex = prodData.findIndex(item =>
+                    item.brand === importItem.brand &&
+                    item.model === importItem.model &&
+                    item.shop === importItem.shop
+                );
+                if (existingIndex !== -1) {
+                    prodData[existingIndex].status = importItem.status;
+                    updatedCount++;
+                } else {
+                    prodData.push({
+                        id: prodNextId++,
+                        brand: importItem.brand,
+                        model: importItem.model,
+                        shop: importItem.shop,
+                        status: importItem.status
+                    });
+                    addedCount++;
+                }
+            });
+
+            saveProdData(prodData);
+            renderProducts();
+            alert(`导入完成！新增 ${addedCount} 条，更新 ${updatedCount} 条。`);
+        } catch(err) {
+            alert('导入失败：' + err.message);
+        }
     };
     reader.readAsArrayBuffer(file);
     this.value = '';
