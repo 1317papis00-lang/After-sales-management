@@ -105,7 +105,7 @@
         .sub-actions .btn { padding:2px 8px; font-size:11px; border-radius:6px; border:1px solid #e2e8f0; background:transparent; color:#64748b; cursor:pointer; transition:0.15s; }
         .sub-actions .btn:hover { background:#f1f4f9; border-color:#cbd5e1; }
 
-        /* 产品、话术、AI等样式（与之前一致） */
+        /* 产品、话术、AI等样式（与之前一致，略） */
         .prod-layout { display:flex; gap:0; min-height:420px; border:1px solid #f1f4f9; border-radius:12px; overflow:hidden; background:#fff; position:relative; }
         .prod-panel { display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }
         #prodShopPanel { width:180px; min-width:120px; max-width:280px; }
@@ -817,6 +817,24 @@
             renderScripts();
             renderComplaints();
             loadDeepSeekKey();
+
+            // 全局委托：展开/收起按钮（修复点击无反应）
+            document.getElementById('asTableBody').addEventListener('click', function(e) {
+                const btn = e.target.closest('.group-expand-btn');
+                if (!btn) return;
+                const groupId = btn.dataset.groupid;
+                const subWrapper = document.querySelector(`.sub-table-wrapper[data-groupid="${groupId}"]`);
+                if (subWrapper) {
+                    subWrapper.classList.toggle('open');
+                    btn.classList.toggle('collapsed');
+                    btn.classList.toggle('expanded');
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.className = subWrapper.classList.contains('open') ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                    }
+                }
+            });
+
             document.getElementById('refreshBtn').addEventListener('click', function() {
                 const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
                 if (activeTab === 'afterSales') renderAfterSales();
@@ -824,6 +842,7 @@
                 else if (activeTab === 'scripts') renderScripts();
                 else if (activeTab === 'complaint') renderComplaints();
             });
+
             // 批量删除（分组视图）
             document.getElementById('asBatchDelete').addEventListener('click', function() {
                 const groupChecks = document.querySelectorAll('.group-checkbox:checked');
@@ -1008,28 +1027,10 @@
 
             tbody.innerHTML = html;
             document.getElementById('asRecordInfo').textContent = `共 ${filtered.length} 条记录，涉及 ${sortedGroups.length} 个订单`;
-            bindGroupEvents();
+            bindGroupEvents(); // 绑定复选框和子操作事件（展开按钮已通过委托处理）
         }
 
         function bindGroupEvents() {
-            // 展开/收起
-            document.querySelectorAll('.group-expand-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const groupId = this.dataset.groupid;
-                    const subWrapper = document.querySelector(`.sub-table-wrapper[data-groupid="${groupId}"]`);
-                    if (subWrapper) {
-                        subWrapper.classList.toggle('open');
-                        this.classList.toggle('collapsed');
-                        this.classList.toggle('expanded');
-                        const icon = this.querySelector('i');
-                        if (icon) {
-                            icon.className = subWrapper.classList.contains('open') ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
-                        }
-                    }
-                });
-            });
-
             // 分组复选框联动
             document.querySelectorAll('.group-checkbox').forEach(cb => {
                 cb.addEventListener('change', function() {
