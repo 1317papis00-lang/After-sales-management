@@ -2064,10 +2064,13 @@
             filtered.forEach(item => {
                 const solCount = item.solutions ? item.solutions.length : 0;
                 html += `<tr>
-                    <td><input type="checkbox" class="as-checkbox" data-id="${item.id}" /></td>
                     <td>
-                        <span class="order-id">${item.orderId}</span>
-                        <button class="copy-order-btn" onclick="copyOrderId('${item.orderId}', this)" title="复制订单号"><i class="fas fa-copy"></i></button>
+                        <div class="action-btns">
+                            <button class="btn as-copy" data-id="${item.id}" title="复制此售后单"><i class="fas fa-copy"></i></button>
+                            <button class="btn as-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn as-solution" data-id="${item.id}"><i class="fas fa-clipboard-list"></i>${solCount > 0 ? ' ' + solCount : ''}</button>
+                            <button class="btn as-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+                        </div>
                     </td>
                     <td>${item.shop}</td>
                     <td>${formatDate(item.signTime)}</td>
@@ -2102,6 +2105,22 @@
                         asData = asData.filter(d => d.id !== id);
                         saveASData(asData);
                         renderAfterSales();
+                    }
+                });
+            });
+            // 复制按钮：用当前记录的数据填充新建表单
+            tbody.querySelectorAll('.as-copy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = asData.find(d => d.id === id);
+                    if (item) {
+                        const copyData = {
+                            ...item,
+                            id: null,
+                            reason: '',
+                            solutions: []
+                        };
+                        openASForm('新建售后（复制）', copyData);
                     }
                 });
             });
