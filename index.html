@@ -26,7 +26,7 @@
         .header-left h1 span { color:#4f6af5; }
         .header-left .badge { font-size:12px; font-weight:500; color:#4f6af5; background:#eef2ff; padding:4px 14px; border-radius:30px; }
         .header-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 20px; border:none; border-radius:10px; font-weight:500; font-size:13px; cursor:pointer; transition:0.2s; background:#f1f4f9; color:#1e293b; text-decoration:none; }
+        .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 20px; border:none; border-radius:10px; font-weight:500; font-size:13px; cursor:pointer; transition:0.2s; background:#f1f4f9; color:#1e293b; }
         .btn:hover { transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,0.05); }
         .btn-primary { background:#4f6af5; color:#fff; }
         .btn-primary:hover { background:#3b56e0; box-shadow:0 4px 14px rgba(79,106,245,0.3); }
@@ -40,10 +40,6 @@
         .btn-outline:hover { background:#f8fafc; border-color:#cbd5e1; transform:none; box-shadow:none; }
         .btn-sm { padding:6px 16px; font-size:12px; }
         .btn-xs { padding:4px 10px; font-size:11px; border-radius:8px; }
-        .view-toggle { display:inline-flex; border-radius:10px; overflow:hidden; border:1.5px solid #e2e8f0; background:#fff; }
-        .view-toggle .view-btn { padding:6px 16px; border:none; background:transparent; font-size:13px; font-weight:500; cursor:pointer; color:#64748b; transition:0.15s; }
-        .view-toggle .view-btn.active { background:#4f6af5; color:#fff; }
-        .view-toggle .view-btn:not(.active):hover { background:#f1f5f9; }
         .copy-order-btn { background:none; border:none; color:#94a3b8; cursor:pointer; padding:0 4px; font-size:13px; transition:0.15s; margin-left:2px; }
         .copy-order-btn:hover { color:#4f6af5; }
         .copy-order-btn.copied { color:#10b981; }
@@ -67,8 +63,8 @@
         .stat-info .stat-number { font-size:24px; font-weight:700; color:#0f172a; line-height:1.2; }
         .stat-info .stat-label { font-size:13px; color:#64748b; }
         .toolbar { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid #f1f4f9; align-items:center; }
-        .search-box { display:flex; align-items:center; background:#f1f5f9; border-radius:12px; padding:0 4px 0 16px; border:2px solid transparent; transition:0.2s; flex:1 1 220px; min-width:180px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.02); }
-        .search-box:focus-within { border-color:#4f6af5; background:#fff; box-shadow:0 0 0 4px rgba(79,106,245,0.08),inset 0 1px 3px rgba(0,0,0,0.02); }
+        .search-box { display:flex; align-items:center; background:#f1f5f9; border-radius:12px; padding:0 4px 0 16px; border:2px solid transparent; transition:0.2s; flex:1 1 220px; min-width:180px; }
+        .search-box:focus-within { border-color:#4f6af5; background:#fff; box-shadow:0 0 0 4px rgba(79,106,245,0.08); }
         .search-box input { border:none; background:transparent; padding:10px 0; font-size:14px; width:100%; outline:none; color:#0f172a; }
         .search-box input::placeholder { color:#94a3b8; }
         .search-box button { background:#4f6af5; border:none; color:#fff; padding:8px 18px; border-radius:10px; font-weight:500; font-size:13px; cursor:pointer; transition:0.15s; }
@@ -94,7 +90,7 @@
         .empty-state .sub { font-size:14px; color:#94a3b8; margin-top:6px; }
         .hidden { display:none !important; }
 
-        /* 分组视图特有 */
+        /* 分组视图 */
         .group-row { background:#fafcff; }
         .group-row td { border-bottom:2px solid #eef2f6; }
         .group-expand-btn { background:none; border:none; color:#4f6af5; cursor:pointer; font-size:14px; padding:0 6px; transition:transform 0.25s ease; }
@@ -109,7 +105,7 @@
         .sub-actions .btn { padding:2px 8px; font-size:11px; border-radius:6px; border:1px solid #e2e8f0; background:transparent; color:#64748b; cursor:pointer; transition:0.15s; }
         .sub-actions .btn:hover { background:#f1f4f9; border-color:#cbd5e1; }
 
-        /* 产品布局、话术、AI等（与原一致） */
+        /* 产品、话术、AI等样式（与之前一致） */
         .prod-layout { display:flex; gap:0; min-height:420px; border:1px solid #f1f4f9; border-radius:12px; overflow:hidden; background:#fff; position:relative; }
         .prod-panel { display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }
         #prodShopPanel { width:180px; min-width:120px; max-width:280px; }
@@ -216,7 +212,6 @@
             .prod-layout { flex-direction:column; min-height:auto; }
             #prodShopPanel, #prodBrandPanel, #prodProductPanel { width:100% !important; max-width:100% !important; min-width:auto !important; max-height:200px; }
             .prod-divider { display:none; }
-            .view-toggle { flex-wrap:wrap; }
         }
         @media (max-width:700px) {
             .form-row { grid-template-columns:1fr; }
@@ -266,7 +261,7 @@
                 <button class="tab-btn" data-tab="complaint"><i class="fas fa-exclamation-triangle"></i> 投诉管理</button>
             </div>
 
-            <!-- 售后管理 -->
+            <!-- 售后管理（统一分组） -->
             <div id="tab-afterSales" class="tab-content active">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list-ul"></i></div><div class="stat-info"><div class="stat-number" id="asTotal">0</div><div class="stat-label">总售后</div></div></div>
@@ -290,14 +285,23 @@
                         <input type="file" id="asFileInput" accept=".xlsx,.xls" style="display:none;">
                         <button class="btn btn-primary btn-sm" id="asAdd"><i class="fas fa-plus"></i> 新建</button>
                     </div>
-                    <div class="view-toggle" id="viewToggle">
-                        <button class="view-btn active" data-view="flat">平铺</button>
-                        <button class="view-btn" data-view="group">分组</button>
-                    </div>
                 </div>
                 <div class="table-wrapper" id="asTableWrapper">
                     <table>
-                        <thead id="asTableHead"><tr></tr></thead>
+                        <thead>
+                            <tr>
+                                <th style="width:32px;"><input type="checkbox" id="asSelectAll" /></th>
+                                <th>订单号</th>
+                                <th>店铺</th>
+                                <th>售后次数</th>
+                                <th>最新状态</th>
+                                <th>最新反馈</th>
+                                <th>过保</th>
+                                <th>14天</th>
+                                <th>最新运单号</th>
+                                <th>最新运输状态</th>
+                            </tr>
+                        </thead>
                         <tbody id="asTableBody"></tbody>
                     </table>
                 </div>
@@ -307,7 +311,7 @@
                 </div>
             </div>
 
-            <!-- 产品管理（与原相同） -->
+            <!-- 产品管理 -->
             <div id="tab-products" class="tab-content">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-box"></i></div><div class="stat-info"><div class="stat-number" id="prodTotal">0</div><div class="stat-label">总产品</div></div></div>
@@ -325,7 +329,7 @@
                         <button class="btn btn-primary btn-sm" id="prodAdd"><i class="fas fa-plus"></i> 添加产品</button>
                     </div>
                 </div>
-                <div class="prod-layout" id="prodLayout">
+                <div class="prod-layout">
                     <div class="prod-panel" id="prodShopPanel">
                         <div class="prod-panel-header"><span><i class="fas fa-store"></i> 店铺</span><span class="prod-panel-count" id="shopCount">0</span></div>
                         <div class="prod-panel-body" id="shopList"></div>
@@ -820,41 +824,30 @@
                 else if (activeTab === 'scripts') renderScripts();
                 else if (activeTab === 'complaint') renderComplaints();
             });
-            // 统一批量删除监听（根据当前视图）
+            // 批量删除（分组视图）
             document.getElementById('asBatchDelete').addEventListener('click', function() {
-                if (currentView === 'flat') {
-                    const ids = Array.from(document.querySelectorAll('.as-checkbox:checked')).map(cb => parseInt(cb.dataset.id));
-                    if (ids.length === 0) { alert('请至少勾选一条'); return; }
-                    if (confirm(`确定删除选中的 ${ids.length} 条？`)) {
-                        asData = asData.filter(d => !ids.includes(d.id));
+                const groupChecks = document.querySelectorAll('.group-checkbox:checked');
+                if (groupChecks.length > 0) {
+                    const orderIds = Array.from(groupChecks).map(cb => cb.dataset.orderid);
+                    if (confirm(`确定删除选中订单（${orderIds.join(', ')}）的所有售后记录？`)) {
+                        asData = asData.filter(d => !orderIds.includes(d.orderId));
                         saveASData(asData);
                         renderAfterSales();
                     }
-                } else {
-                    // 分组视图
-                    const groupChecks = document.querySelectorAll('.group-checkbox:checked');
-                    if (groupChecks.length > 0) {
-                        const orderIds = Array.from(groupChecks).map(cb => cb.dataset.orderid);
-                        if (confirm(`确定删除选中订单（${orderIds.join(', ')}）的所有售后记录？`)) {
-                            asData = asData.filter(d => !orderIds.includes(d.orderId));
-                            saveASData(asData);
-                            renderAfterSales();
-                        }
-                        return;
-                    }
-                    const subChecks = document.querySelectorAll('.sub-checkbox:checked');
-                    if (subChecks.length === 0) { alert('请至少勾选一条记录'); return; }
-                    const ids = Array.from(subChecks).map(cb => parseInt(cb.dataset.id));
-                    if (confirm(`确定删除选中的 ${ids.length} 条记录？`)) {
-                        asData = asData.filter(d => !ids.includes(d.id));
-                        saveASData(asData);
-                        renderAfterSales();
-                    }
+                    return;
+                }
+                const subChecks = document.querySelectorAll('.sub-checkbox:checked');
+                if (subChecks.length === 0) { alert('请至少勾选一条记录'); return; }
+                const ids = Array.from(subChecks).map(cb => parseInt(cb.dataset.id));
+                if (confirm(`确定删除选中的 ${ids.length} 条记录？`)) {
+                    asData = asData.filter(d => !ids.includes(d.id));
+                    saveASData(asData);
+                    renderAfterSales();
                 }
             });
         }
 
-        // ========================== 1. 售后管理（核心） ==========================
+        // ========================== 售后管理（统一分组） ==========================
         const AS_STORAGE_KEY = 'afterSalesData_v4';
         let asData = loadASData();
         let asNextId = asData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
@@ -877,7 +870,6 @@
                     }
                 } catch (e) {}
             }
-            // 示例数据
             return [
                 { id: 1, orderId: 'FBN2026042206', shop: 'HUACHUNEBK', signTime: '2026-07-20', feedbackTime: '2026-07-24', reason: '挡泥板非原装', status: '待处理', solutions: [{ content: '返厂维修', createdAt: new Date().toISOString(), trackingNumber: 'SF123456', trackingStatus: '运输中', remark: '' }] },
                 { id: 2, orderId: 'FBN2026042206', shop: 'HUACHUNEBK', signTime: '2026-07-18', feedbackTime: '2026-07-07', reason: '控制器烧毁', status: '已完成', solutions: [{ content: '换货', createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '', remark: '' }] },
@@ -887,17 +879,6 @@
         }
 
         function saveASData(data) { localStorage.setItem(AS_STORAGE_KEY, JSON.stringify(data)); }
-
-        let currentView = 'flat';
-
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentView = this.dataset.view;
-                renderAfterSales();
-            });
-        });
 
         function getLatestRecord(records) {
             if (!records || records.length === 0) return null;
@@ -923,6 +904,7 @@
             });
             filtered.sort((a, b) => (b.feedbackTime || '').localeCompare(a.feedbackTime || ''));
 
+            // 统计
             document.getElementById('asTotal').textContent = asData.length;
             document.getElementById('asPending').textContent = asData.filter(d => d.status === '待处理').length;
             document.getElementById('asCompleted').textContent = asData.filter(d => d.status === '已完成').length;
@@ -953,91 +935,9 @@
             }
             empty.classList.add('hidden');
 
-            if (currentView === 'flat') {
-                renderFlatView(tbody, filtered);
-            } else {
-                renderGroupView(tbody, filtered);
-            }
-        }
-
-        // ---- 平铺视图 ----
-        function renderFlatView(tbody, data) {
-            let html = '';
-            data.forEach(item => {
-                const solCount = item.solutions ? item.solutions.length : 0;
-                const latestSol = getLatestSolutionInfo(item);
-                html += `<tr>
-                    <td><input type="checkbox" class="as-checkbox" data-id="${item.id}" /></td>
-                    <td>
-                        <span class="order-id">${item.orderId}</span>
-                        <button class="copy-order-btn" onclick="copyOrderId('${item.orderId}', this)" title="复制订单号"><i class="fas fa-copy"></i></button>
-                    </td>
-                    <td>${item.shop}</td>
-                    <td>${formatDate(item.signTime)}</td>
-                    <td>${formatDate(item.feedbackTime)}</td>
-                    <td>${overdueBadge(item.signTime)}</td>
-                    <td>${daysBadge(item.signTime)}</td>
-                    <td>${item.reason || '—'}</td>
-                    <td>${statusBadge(item.status)}</td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="btn as-copy" data-id="${item.id}" title="复制此售后单"><i class="fas fa-copy"></i></button>
-                            <button class="btn as-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
-                            <button class="btn as-solution" data-id="${item.id}"><i class="fas fa-clipboard-list"></i>${solCount > 0 ? ' ' + solCount : ''}</button>
-                            <button class="btn as-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-            document.getElementById('asRecordInfo').textContent = `共 ${data.length} 条`;
-            bindFlatEvents();
-        }
-
-        function bindFlatEvents() {
-            document.querySelectorAll('.as-edit').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.dataset.id);
-                    const item = asData.find(d => d.id === id);
-                    if (item) openASForm('编辑售后', item);
-                });
-            });
-            document.querySelectorAll('.as-delete').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (confirm('确定删除？')) {
-                        const id = parseInt(this.dataset.id);
-                        asData = asData.filter(d => d.id !== id);
-                        saveASData(asData);
-                        renderAfterSales();
-                    }
-                });
-            });
-            document.querySelectorAll('.as-copy').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.dataset.id);
-                    const item = asData.find(d => d.id === id);
-                    if (item) {
-                        const copyData = { ...item, id: null, reason: '', solutions: [] };
-                        openASForm('新建售后（复制）', copyData);
-                    }
-                });
-            });
-            document.querySelectorAll('.as-solution').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.dataset.id);
-                    const item = asData.find(d => d.id === id);
-                    if (item) openSolutionModal(item);
-                });
-            });
-            document.getElementById('asSelectAll').addEventListener('change', function() {
-                document.querySelectorAll('.as-checkbox').forEach(cb => cb.checked = this.checked);
-            });
-        }
-
-        // ---- 分组视图 ----
-        function renderGroupView(tbody, data) {
+            // 分组渲染
             const groups = {};
-            data.forEach(item => {
+            filtered.forEach(item => {
                 if (!groups[item.orderId]) groups[item.orderId] = [];
                 groups[item.orderId].push(item);
             });
@@ -1107,7 +1007,7 @@
             });
 
             tbody.innerHTML = html;
-            document.getElementById('asRecordInfo').textContent = `共 ${data.length} 条记录，涉及 ${sortedGroups.length} 个订单`;
+            document.getElementById('asRecordInfo').textContent = `共 ${filtered.length} 条记录，涉及 ${sortedGroups.length} 个订单`;
             bindGroupEvents();
         }
 
@@ -1138,7 +1038,6 @@
                     subChecks.forEach(sub => sub.checked = this.checked);
                 });
             });
-
             document.querySelectorAll('.sub-checkbox').forEach(cb => {
                 cb.addEventListener('change', function() {
                     const orderId = this.dataset.orderid;
@@ -1183,6 +1082,13 @@
                     const item = asData.find(d => d.id === id);
                     if (item) openSolutionModal(item);
                 });
+            });
+
+            // 全选/取消全选
+            document.getElementById('asSelectAll').addEventListener('change', function() {
+                const checked = this.checked;
+                document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = checked);
+                document.querySelectorAll('.sub-checkbox').forEach(cb => cb.checked = checked);
             });
         }
 
@@ -1479,7 +1385,6 @@
         let selectedShop = null, selectedBrand = null;
 
         function saveProdData(data) { localStorage.setItem(PROD_STORAGE_KEY, JSON.stringify(data)); }
-
         function getShops() { return Array.from(new Set(prodData.map(d => d.shop).filter(Boolean))).sort(); }
         function getBrandsByShop(shop) { return Array.from(new Set(prodData.filter(d => d.shop === shop).map(d => d.brand).filter(Boolean))).sort(); }
         function getProductsByBrand(shop, brand) { return prodData.filter(d => d.shop === shop && d.brand === brand); }
@@ -2115,7 +2020,6 @@
             renderComplaints();
         });
 
-        // 窗口加载完成时初始化
         window.onload = function() {};
     </script>
 </body>
