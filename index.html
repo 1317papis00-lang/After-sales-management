@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
+        /* ===== 全局重置 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',-apple-system,sans-serif; background:#f1f5f9; color:#0f172a; padding:24px 20px; line-height:1.6; }
         .container { max-width:1600px; margin:0 auto; background:#fff; border-radius:20px; padding:28px 32px 36px; box-shadow:0 4px 20px rgba(0,0,0,0.04),0 1px 3px rgba(0,0,0,0.02); }
@@ -90,21 +91,21 @@
         .empty-state .sub { font-size:14px; color:#94a3b8; margin-top:6px; }
         .hidden { display:none !important; }
 
-        /* 分组视图 - 修复展开/收起 */
+        /* 分组视图 */
         .group-row { background:#fafcff; }
         .group-row td { border-bottom:2px solid #eef2f6; }
         .group-expand-btn { background:none; border:none; color:#4f6af5; cursor:pointer; font-size:14px; padding:0 6px; transition:transform 0.25s ease; }
         .group-expand-btn.collapsed { transform:rotate(-90deg); }
         .group-expand-btn.expanded { transform:rotate(0deg); }
 
-        /* 关键修复：将折叠容器改为 div，并支持 max-height 过渡 */
+        /* 子表格折叠容器（div） */
         .sub-table-wrapper {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
         .sub-table-wrapper.open {
-            max-height: 2000px; /* 足够容纳所有子行 */
+            max-height: 2000px;
         }
         .sub-table {
             width: 100%;
@@ -116,13 +117,20 @@
             padding: 8px 14px 8px 40px;
             border-bottom: 1px solid #f1f4f9;
             vertical-align: middle;
+            white-space: nowrap; /* 默认不换行 */
+        }
+        /* 原因列允许换行并限制宽度 */
+        .sub-table .reason-col {
+            max-width: 200px;
+            white-space: normal;
+            word-break: break-word;
         }
         .sub-table tr:last-child td { border-bottom: none; }
         .sub-checkbox { margin-right:6px; }
         .sub-actions .btn { padding:2px 8px; font-size:11px; border-radius:6px; border:1px solid #e2e8f0; background:transparent; color:#64748b; cursor:pointer; transition:0.15s; }
         .sub-actions .btn:hover { background:#f1f4f9; border-color:#cbd5e1; }
 
-        /* 产品、话术、AI等样式（与之前一致，略） */
+        /* 产品、话术、AI等样式（完整保留） */
         .prod-layout { display:flex; gap:0; min-height:420px; border:1px solid #f1f4f9; border-radius:12px; overflow:hidden; background:#fff; position:relative; }
         .prod-panel { display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }
         #prodShopPanel { width:180px; min-width:120px; max-width:280px; }
@@ -278,7 +286,7 @@
                 <button class="tab-btn" data-tab="complaint"><i class="fas fa-exclamation-triangle"></i> 投诉管理</button>
             </div>
 
-            <!-- 售后管理（统一分组，修复展开/收起） -->
+            <!-- 售后管理 -->
             <div id="tab-afterSales" class="tab-content active">
                 <div class="stats">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list-ul"></i></div><div class="stat-info"><div class="stat-number" id="asTotal">0</div><div class="stat-label">总售后</div></div></div>
@@ -835,7 +843,7 @@
             renderComplaints();
             loadDeepSeekKey();
 
-            // 全局委托：展开/收起按钮（已修复）
+            // 展开/收起（事件委托）
             document.getElementById('asTableBody').addEventListener('click', function(e) {
                 const btn = e.target.closest('.group-expand-btn');
                 if (!btn) return;
@@ -860,7 +868,7 @@
                 else if (activeTab === 'complaint') renderComplaints();
             });
 
-            // 批量删除（分组视图）
+            // 批量删除
             document.getElementById('asBatchDelete').addEventListener('click', function() {
                 const groupChecks = document.querySelectorAll('.group-checkbox:checked');
                 if (groupChecks.length > 0) {
@@ -883,7 +891,7 @@
             });
         }
 
-        // ========================== 售后管理（统一分组，已修复折叠） ==========================
+        // ========================== 售后管理 ==========================
         const AS_STORAGE_KEY = 'afterSalesData_v4';
         let asData = loadASData();
         let asNextId = asData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
@@ -940,7 +948,6 @@
             });
             filtered.sort((a, b) => (b.feedbackTime || '').localeCompare(a.feedbackTime || ''));
 
-            // 统计
             document.getElementById('asTotal').textContent = asData.length;
             document.getElementById('asPending').textContent = asData.filter(d => d.status === '待处理').length;
             document.getElementById('asCompleted').textContent = asData.filter(d => d.status === '已完成').length;
@@ -948,7 +955,6 @@
             const orderSet = new Set(asData.map(d => d.orderId).filter(Boolean));
             document.getElementById('asOrderCount').textContent = orderSet.size;
 
-            // 更新店铺筛选
             const shopSet = new Set(asData.map(d => d.shop).filter(Boolean));
             const sel = document.getElementById('asShopFilter');
             const cur = sel.value;
@@ -971,7 +977,6 @@
             }
             empty.classList.add('hidden');
 
-            // 分组渲染
             const groups = {};
             filtered.forEach(item => {
                 if (!groups[item.orderId]) groups[item.orderId] = [];
@@ -1008,7 +1013,7 @@
                     <td>${latestSol.trackingNumber || '—'}</td>
                     <td>${latestSol.trackingStatus || '—'}</td>
                 </tr>`;
-                // 使用 div 包裹子表格，实现折叠效果
+                // 子表格（div 包裹）
                 html += `<tr>
                     <td colspan="10" style="padding:0;">
                         <div class="sub-table-wrapper" data-groupid="${groupId}">
@@ -1018,12 +1023,13 @@
                 sortedRecords.forEach((rec, idx) => {
                     const solCount = rec.solutions ? rec.solutions.length : 0;
                     const recSol = getLatestSolutionInfo(rec);
+                    // 为原因列添加类 reason-col，限制宽度并允许换行
                     html += `<tr>
                         <td style="padding-left:40px;">
                             <input type="checkbox" class="sub-checkbox" data-id="${rec.id}" data-orderid="${orderId}" />
                         </td>
                         <td>#${idx+1}</td>
-                        <td>${rec.reason || '—'}</td>
+                        <td class="reason-col">${rec.reason || '—'}</td>
                         <td>${statusBadge(rec.status)}</td>
                         <td>${formatDate(rec.feedbackTime)}</td>
                         <td>${formatDate(rec.signTime)}</td>
@@ -1047,11 +1053,10 @@
 
             tbody.innerHTML = html;
             document.getElementById('asRecordInfo').textContent = `共 ${filtered.length} 条记录，涉及 ${sortedGroups.length} 个订单`;
-            bindGroupEvents(); // 绑定复选框和子操作事件
+            bindGroupEvents();
         }
 
         function bindGroupEvents() {
-            // 分组复选框联动
             document.querySelectorAll('.group-checkbox').forEach(cb => {
                 cb.addEventListener('change', function() {
                     const orderId = this.dataset.orderid;
@@ -1069,7 +1074,6 @@
                 });
             });
 
-            // 子记录操作
             document.querySelectorAll('.sub-actions .as-edit').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = parseInt(this.dataset.id);
@@ -1105,7 +1109,6 @@
                 });
             });
 
-            // 全选/取消全选
             document.getElementById('asSelectAll').addEventListener('change', function() {
                 const checked = this.checked;
                 document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = checked);
