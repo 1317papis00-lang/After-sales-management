@@ -858,6 +858,16 @@
                 }
             });
 
+            // 话术复制功能 – 事件委托（确保所有语言复制按钮有效）
+            document.getElementById('scriptTableBody').addEventListener('click', function(e) {
+                const btn = e.target.closest('.copy-order-btn');
+                if (!btn) return;
+                const content = btn.dataset.content;
+                if (content !== undefined) {
+                    copyText(content, btn);
+                }
+            });
+
             document.getElementById('refreshBtn').addEventListener('click', function() {
                 const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
                 if (activeTab === 'afterSales') renderAfterSales();
@@ -1597,7 +1607,7 @@
             this.value = '';
         });
 
-        // ========================== 3. 话术管理（已修复复制功能） ==========================
+        // ========================== 3. 话术管理（修复复制：使用 data-content 和事件委托） ==========================
         const SCRIPT_STORAGE_KEY = 'scriptData';
         let scriptData = JSON.parse(localStorage.getItem(SCRIPT_STORAGE_KEY) || '[]');
 
@@ -1632,11 +1642,11 @@
             let html = '';
             filtered.forEach((item, index) => {
                 const seq = index + 1;
-                // 为每个语言内容生成复制按钮（使用 JSON.stringify 安全转义）
-                const zhBtn = item.contentZh ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentZh)}, this)" title="复制中文"><i class="fas fa-copy"></i></button>` : '';
-                const plBtn = item.contentPl ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentPl)}, this)" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
-                const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentFr)}, this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
-                const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentEn)}, this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
+                // 使用 data-content 存储原文，用 JSON.stringify 安全编码
+                const zhBtn = item.contentZh ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentZh))}" title="复制中文"><i class="fas fa-copy"></i></button>` : '';
+                const plBtn = item.contentPl ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentPl))}" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
+                const frBtn = item.contentFr ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentFr))}" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
+                const enBtn = item.contentEn ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentEn))}" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
 
                 const buildCell = (content, btnHtml, isChinese = false) => {
                     const hasContent = content && content.trim() !== '';
@@ -1681,6 +1691,8 @@
                 });
             });
         }
+
+        // 在 initAll 中已绑定 copy-order-btn 的点击事件（事件委托），处理 data-content
 
         function openScriptForm(title, data) {
             const modal = document.getElementById('commonModal');
