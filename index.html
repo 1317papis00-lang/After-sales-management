@@ -534,35 +534,45 @@
             <div class="modal">
                 <div class="modal-header">
                     <h2 data-i18n="system_settings_title">系统设置</h2>
-                    <button class="modal-close" onclick="closeSystemSettings()">&times;</button>
+                    <button class="modal-close" onclick="closeModal('changePasswordModal')">&times;</button>
                 </div>
                 <form id="changePwForm">
                     <div class="form-group"><label data-i18n="old_password">旧密码 <span class="required">*</span></label><input type="password" id="oldPw" required /></div>
                     <div class="form-group"><label data-i18n="new_password">新密码 <span class="required">*</span></label><input type="password" id="newPw" required /></div>
                     <div class="form-group"><label data-i18n="confirm_password">确认新密码 <span class="required">*</span></label><input type="password" id="confirmPw" required /></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline" onclick="closeSystemSettings()" data-i18n="cancel">取消</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('changePasswordModal')" data-i18n="cancel">取消</button>
                         <button type="submit" class="btn btn-primary" data-i18n="confirm">确认修改</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- 其他弹窗（通用） -->
+        <!-- 通用弹窗（售后/产品/话术编辑） -->
         <div class="modal-overlay" id="commonModal">
             <div class="modal">
-                <div class="modal-header"><h2 id="commonModalTitle">标题</h2><button class="modal-close" id="commonModalClose">&times;</button></div>
+                <div class="modal-header">
+                    <h2 id="commonModalTitle">标题</h2>
+                    <button class="modal-close" onclick="closeModal('commonModal')">&times;</button>
+                </div>
                 <form id="commonForm">
                     <input type="hidden" id="commonEditId" />
                     <div id="commonFormFields"></div>
-                    <div class="modal-footer"><button type="button" class="btn btn-outline" id="commonModalCancel" data-i18n="cancel">取消</button><button type="submit" class="btn btn-primary" data-i18n="save">保存</button></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('commonModal')" data-i18n="cancel">取消</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="save">保存</button>
+                    </div>
                 </form>
             </div>
         </div>
 
+        <!-- 投诉弹窗 -->
         <div class="modal-overlay" id="complaintModal">
             <div class="modal">
-                <div class="modal-header"><h2 id="complaintModalTitle" data-i18n="add_complaint">添加申诉</h2><button class="modal-close" id="complaintModalClose">&times;</button></div>
+                <div class="modal-header">
+                    <h2 id="complaintModalTitle" data-i18n="add_complaint">添加申诉</h2>
+                    <button class="modal-close" onclick="closeModal('complaintModal')">&times;</button>
+                </div>
                 <form id="complaintForm">
                     <input type="hidden" id="complaintEditId" />
                     <div class="form-group"><label data-i18n="order_id">订单号 <span class="required">*</span></label><input type="text" id="complaintFOrderId" placeholder="例如：ORD-20260727-001" required /></div>
@@ -575,14 +585,21 @@
                         <select id="complaintFResolved"><option value="否" data-i18n-opt="unresolved">否</option><option value="是" data-i18n-opt="resolved">是</option></select>
                     </div>
                     <div class="form-group"><label data-i18n="solution">解决方案</label><textarea id="complaintFSolution" rows="2" placeholder="描述解决方案..."></textarea></div>
-                    <div class="modal-footer"><button type="button" class="btn btn-outline" id="complaintModalCancel" data-i18n="cancel">取消</button><button type="submit" class="btn btn-primary" data-i18n="save">保存</button></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('complaintModal')" data-i18n="cancel">取消</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="save">保存</button>
+                    </div>
                 </form>
             </div>
         </div>
 
+        <!-- 方案管理弹窗 -->
         <div class="modal-overlay" id="solutionModalOverlay">
             <div class="modal">
-                <div class="modal-header"><h2 id="solutionModalTitle" data-i18n="solution_management">方案管理</h2><button class="modal-close" id="solutionModalCloseBtn">&times;</button></div>
+                <div class="modal-header">
+                    <h2 id="solutionModalTitle" data-i18n="solution_management">方案管理</h2>
+                    <button class="modal-close" onclick="closeModal('solutionModalOverlay')">&times;</button>
+                </div>
                 <div id="solutionModalBody">
                     <div id="solutionList" class="solution-list"></div>
                     <div class="solution-form-section">
@@ -599,7 +616,7 @@
                             </div>
                             <div class="form-group"><label data-i18n="remark">备注</label><input type="text" id="newSolutionRemark" placeholder="备注（选填）" /></div>
                             <div class="modal-footer" style="justify-content:space-between; border-top:none; padding-top:0;">
-                                <button type="button" class="btn btn-outline btn-sm" id="cancelSolutionEdit" style="display:none;" data-i18n="cancel_edit">取消编辑</button>
+                                <button type="button" class="btn btn-outline btn-sm" id="cancelSolutionEdit" onclick="closeModal('solutionModalOverlay')" style="display:none;" data-i18n="cancel_edit">取消编辑</button>
                                 <button type="submit" class="btn btn-primary" id="addSolutionSubmitBtn"><i class="fas fa-plus"></i> <span data-i18n="add_solution">添加方案</span></button>
                             </div>
                         </form>
@@ -610,6 +627,37 @@
     </div>
 
     <script>
+        // =====================================================================
+        //  全局关闭弹窗函数（供内联 onclick 调用）
+        // =====================================================================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function openSystemSettings() {
+            document.getElementById('changePasswordModal').classList.add('active');
+            document.getElementById('oldPw').value = '';
+            document.getElementById('newPw').value = '';
+            document.getElementById('confirmPw').value = '';
+        }
+
+        // =====================================================================
+        //  刷新数据（带旋转动画）
+        // =====================================================================
+        function refreshData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.classList.add('spinning');
+            const active = document.querySelector('.menu-item[data-menu].active');
+            if (active) {
+                const menu = active.dataset.menu;
+                if (menu === 'afterSales') renderAfterSales();
+                else if (menu === 'products') renderProducts();
+                else if (menu === 'scripts') renderScripts();
+                else if (menu === 'complaint') renderComplaints();
+            }
+            setTimeout(() => { btn.classList.remove('spinning'); }, 600);
+        }
+
         // =====================================================================
         //  密码管理
         // =====================================================================
@@ -634,43 +682,6 @@
         document.getElementById('passwordInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') document.getElementById('passwordBtn').click();
         });
-
-        // =====================================================================
-        //  系统设置弹窗控制
-        // =====================================================================
-        function openSystemSettings() {
-            document.getElementById('changePasswordModal').classList.add('active');
-            document.getElementById('oldPw').value = '';
-            document.getElementById('newPw').value = '';
-            document.getElementById('confirmPw').value = '';
-        }
-        function closeSystemSettings() {
-            document.getElementById('changePasswordModal').classList.remove('active');
-        }
-
-        // =====================================================================
-        //  刷新数据（带旋转动画）
-        // =====================================================================
-        function refreshData() {
-            const btn = document.getElementById('refreshBtn');
-            // 添加旋转动画类
-            btn.classList.add('spinning');
-
-            // 执行刷新逻辑
-            const active = document.querySelector('.menu-item[data-menu].active');
-            if (active) {
-                const menu = active.dataset.menu;
-                if (menu === 'afterSales') renderAfterSales();
-                else if (menu === 'products') renderProducts();
-                else if (menu === 'scripts') renderScripts();
-                else if (menu === 'complaint') renderComplaints();
-            }
-
-            // 0.6秒后移除动画类（与CSS动画时长一致）
-            setTimeout(() => {
-                btn.classList.remove('spinning');
-            }, 600);
-        }
 
         // =====================================================================
         //  国际化（i18n）
@@ -1016,7 +1027,7 @@
 
             if (verifyPassword(newP)) {
                 alert('密码修改成功！');
-                closeSystemSettings();
+                closeModal('changePasswordModal');
             } else {
                 alert('密码修改失败，请重试');
             }
@@ -1032,29 +1043,9 @@
             renderScripts();
             renderComplaints();
 
-            // 其他弹窗关闭事件
-            document.getElementById('commonModalClose').addEventListener('click', function() {
-                document.getElementById('commonModal').classList.remove('active');
-            });
-            document.getElementById('commonModalCancel').addEventListener('click', function() {
-                document.getElementById('commonModal').classList.remove('active');
-            });
-            document.getElementById('complaintModalClose').addEventListener('click', function() {
-                document.getElementById('complaintModal').classList.remove('active');
-            });
-            document.getElementById('complaintModalCancel').addEventListener('click', function() {
-                document.getElementById('complaintModal').classList.remove('active');
-            });
-            document.getElementById('solutionModalCloseBtn').addEventListener('click', function() {
-                document.getElementById('solutionModalOverlay').classList.remove('active');
-                currentSolutionItemId = null;
-            });
-            document.getElementById('solutionModalOverlay').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                    currentSolutionItemId = null;
-                }
-            });
+            // 统一关闭弹窗（备用，但内联 onclick 已生效）
+            // 以下为表单提交事件（已在上方绑定）
+            // 其他弹窗的关闭已由内联 onclick 处理
 
             // 售后展开
             document.getElementById('asTableBody').addEventListener('click', function(e) {
