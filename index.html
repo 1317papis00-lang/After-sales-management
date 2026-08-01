@@ -41,7 +41,6 @@
             --transition: 0.2s;
         }
 
-        /* 深色主题 */
         body.dark-mode {
             --bg-body: #0f172a;
             --bg-sidebar: #020617;
@@ -105,6 +104,14 @@
         .sider .menu .menu-item.divider { border-top:1px solid #1e293b; padding:0; margin:8px 12px 4px; height:1px; cursor:default; background:transparent; box-shadow:none; }
         .sider .menu .menu-item.divider:hover { background:transparent; }
 
+        /* ===== 刷新按钮旋转动画 ===== */
+        #refreshBtn .fa-sync-alt {
+            transition: transform 0.6s ease;
+        }
+        #refreshBtn.spinning .fa-sync-alt {
+            transform: rotate(360deg);
+        }
+
         /* ===== 内容区 ===== */
         .main-area { flex:1; display:flex; flex-direction:column; min-width:0; background:var(--bg-content); transition:background var(--transition); }
         .main-area .topbar { background:var(--bg-topbar); padding:12px 28px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; min-height:64px; transition:background var(--transition), border-color var(--transition); }
@@ -112,7 +119,6 @@
         .main-area .topbar .page-title .sub { font-size:13px; font-weight:400; color:var(--text-secondary); }
         .main-area .topbar .actions { display:flex; align-items:center; gap:8px; }
 
-        /* ===== 顶部下拉框 ===== */
         .top-select { padding:6px 28px 6px 12px; border-radius:var(--radius); border:1px solid var(--border-color); background:var(--bg-select) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364758b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 10px center; background-size:10px; color:var(--text-primary); font-size:13px; font-weight:500; cursor:pointer; outline:none; transition:0.2s; min-width:76px; appearance:none; -webkit-appearance:none; font-family:inherit; height:34px; box-sizing:border-box; }
         .top-select:hover { border-color:var(--color-primary); }
         .top-select:focus { border-color:var(--color-primary); box-shadow:0 0 0 3px rgba(79,106,245,0.12); }
@@ -164,7 +170,7 @@
         .btn-outline:hover { background:var(--bg-input); border-color:var(--border-color); transform:none; box-shadow:none; }
         .btn-sm { padding:5px 12px; font-size:12px; }
 
-        /* ===== 表格（通用） ===== */
+        /* ===== 表格 ===== */
         .table-wrapper { overflow-x:auto; border-radius:12px; border:1px solid var(--border-color); background:var(--bg-card); transition:background var(--transition), border-color var(--transition); }
         table { width:100%; border-collapse:collapse; font-size:13px; min-width:700px; table-layout:auto; }
         thead { background:var(--bg-table-header); border-bottom:2px solid var(--border-color); transition:background var(--transition), border-color var(--transition); }
@@ -221,36 +227,17 @@
         .prod-divider { width:4px; background:var(--border-color); cursor:col-resize; flex-shrink:0; transition:background 0.15s; position:relative; }
         .prod-divider:hover, .prod-divider.active { background:var(--color-primary); }
 
-        /* ===== 话术管理（列宽自适应 + 分页） ===== */
+        /* ===== 话术管理 ===== */
         .script-content { width:100%; }
         .script-content .panel-page { display:none; }
         .script-content .panel-page.active { display:block; }
 
-        /* 话术表格自适应列宽 */
-        #page-scripts .table-wrapper table {
-            table-layout: auto;
-            min-width: 700px;
-        }
-        .col-seq {
-            white-space: nowrap;
-            text-align: center;
-            min-width: 36px;
-        }
-        .col-category {
-            white-space: nowrap;
-            min-width: 60px;
-        }
-        .col-content {
-            width: 25%;
-            min-width: 100px;
-        }
-        .col-actions {
-            white-space: nowrap;
-            text-align: center;
-            min-width: 68px;
-        }
+        #page-scripts .table-wrapper table { table-layout: auto; min-width: 700px; }
+        .col-seq { white-space: nowrap; text-align: center; min-width: 36px; }
+        .col-category { white-space: nowrap; min-width: 60px; }
+        .col-content { width: 25%; min-width: 100px; }
+        .col-actions { white-space: nowrap; text-align: center; min-width: 68px; }
 
-        /* 话术单元格内容样式：最多两行 */
         .script-cell-wrapper { display:flex; align-items:flex-start; gap:4px; width:100%; line-height:1.5; }
         .script-cell-wrapper .script-text { flex:1; word-break:break-word; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; max-height:3em; transition:max-height 0.3s ease; }
         .script-cell-wrapper .script-text.expanded { -webkit-line-clamp:unset; max-height:none; display:block; }
@@ -258,58 +245,15 @@
         .script-cell-wrapper .script-actions .toggle-btn { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px; padding:0 4px; transition:0.15s; }
         .script-cell-wrapper .script-actions .toggle-btn:hover { color:var(--color-primary); }
 
-        /* ===== 分页组件 ===== */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 16px;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .pagination .page-info {
-            color: var(--text-muted);
-        }
-        .pagination .page-btns {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .pagination .page-btns button {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 4px 10px;
-            font-size: 13px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: 0.15s;
-            min-width: 32px;
-            text-align: center;
-            font-weight: 500;
-            background: var(--bg-card);
-        }
-        .pagination .page-btns button:hover:not(:disabled) {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-            background: var(--bg-input);
-        }
-        .pagination .page-btns button.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-            color: #fff;
-        }
-        .pagination .page-btns button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .pagination .page-btns .ellipsis {
-            padding: 0 4px;
-            color: var(--text-muted);
-        }
+        /* ===== 分页 ===== */
+        .pagination { display:flex; align-items:center; justify-content:space-between; margin-top:16px; flex-wrap:wrap; gap:10px; font-size:13px; color:var(--text-secondary); }
+        .pagination .page-info { color:var(--text-muted); }
+        .pagination .page-btns { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+        .pagination .page-btns button { background:transparent; border:1px solid var(--border-color); border-radius:var(--radius); padding:4px 10px; font-size:13px; cursor:pointer; color:var(--text-secondary); transition:0.15s; min-width:32px; text-align:center; font-weight:500; background:var(--bg-card); }
+        .pagination .page-btns button:hover:not(:disabled) { border-color:var(--color-primary); color:var(--color-primary); background:var(--bg-input); }
+        .pagination .page-btns button.active { background:var(--color-primary); border-color:var(--color-primary); color:#fff; }
+        .pagination .page-btns button:disabled { opacity:0.4; cursor:not-allowed; }
+        .pagination .page-btns .ellipsis { padding:0 4px; color:var(--text-muted); }
 
         /* ===== 弹窗 ===== */
         .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.4); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:999; padding:20px; }
@@ -392,44 +336,36 @@
     <div id="mainContent">
         <div class="app-layout">
 
-            <!-- ===== 侧边栏 ===== -->
+            <!-- 侧边栏 -->
             <aside class="sider" id="sider">
                 <div class="logo">
                     <i class="fas fa-cube"></i>
                     <span>售后系统</span>
                 </div>
                 <nav class="menu">
-                    <!-- 主菜单 -->
                     <button class="menu-item active" data-menu="afterSales"><i class="fas fa-headset"></i> <span data-i18n="menu_afterSales">售后管理</span></button>
                     <button class="menu-item" data-menu="products"><i class="fas fa-box"></i> <span data-i18n="menu_products">产品管理</span></button>
                     <button class="menu-item" data-menu="scripts"><i class="fas fa-comment-dots"></i> <span data-i18n="menu_scripts">话术管理</span></button>
                     <button class="menu-item" data-menu="complaint"><i class="fas fa-exclamation-triangle"></i> <span data-i18n="menu_complaint">投诉管理</span></button>
-
-                    <!-- 分隔线 -->
                     <div class="menu-item divider"></div>
-
-                    <!-- 系统设置 & 刷新数据（添加 onclick 直接调用） -->
                     <button class="menu-item" id="settingsBtn" onclick="openSystemSettings()"><i class="fas fa-cog"></i> <span data-i18n="system_settings">系统设置</span></button>
                     <button class="menu-item" id="refreshBtn" onclick="refreshData()"><i class="fas fa-sync-alt"></i> <span data-i18n="refresh">刷新数据</span></button>
                 </nav>
             </aside>
 
-            <!-- ===== 内容区 ===== -->
+            <!-- 内容区 -->
             <main class="main-area">
-                <!-- 顶部栏 -->
                 <header class="topbar">
                     <div class="page-title" id="pageTitle">
                         <i class="fas fa-headset" style="color:#4f6af5;"></i> <span data-i18n="menu_afterSales">售后管理</span>
                         <span class="sub" data-i18n="realtime">实时数据</span>
                     </div>
                     <div class="actions">
-                        <!-- 主题下拉 -->
                         <select class="top-select" id="themeSelect">
                             <option value="light">☀️ 浅色</option>
                             <option value="dark">🌙 深色</option>
                             <option value="system">💻 系统</option>
                         </select>
-                        <!-- 语言下拉 -->
                         <select class="top-select" id="langSelect">
                             <option value="zh">中文</option>
                             <option value="en">English</option>
@@ -437,10 +373,8 @@
                     </div>
                 </header>
 
-                <!-- 内容 -->
                 <div class="content" id="mainContentArea">
-
-                    <!-- ===== 售后管理（仅分组视图） ===== -->
+                    <!-- 售后管理 -->
                     <div class="page-content active" id="page-afterSales">
                         <div class="stats" id="asStats">
                             <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list-ul"></i></div><div class="stat-number" id="asTotal">0</div><div class="stat-label" data-i18n="total_after_sales">总售后</div></div>
@@ -467,10 +401,7 @@
                         </div>
                         <div class="table-wrapper">
                             <table>
-                                <thead id="asTableHead"><tr>
-                                    <th style="width:32px;"><input type="checkbox" id="asSelectAll" /></th>
-                                    <th data-i18n="order_id">订单号</th><th data-i18n="shop">店铺</th><th data-i18n="after_sales_count">售后次数</th><th data-i18n="latest_status">最新状态</th><th data-i18n="latest_feedback">最新反馈</th><th data-i18n="warranty">过保</th><th data-i18n="days_14">14天</th><th data-i18n="latest_tracking">最新运单号</th><th data-i18n="latest_transport">最新运输状态</th>
-                                </tr></thead>
+                                <thead><tr><th style="width:32px;"><input type="checkbox" id="asSelectAll" /></th><th data-i18n="order_id">订单号</th><th data-i18n="shop">店铺</th><th data-i18n="after_sales_count">售后次数</th><th data-i18n="latest_status">最新状态</th><th data-i18n="latest_feedback">最新反馈</th><th data-i18n="warranty">过保</th><th data-i18n="days_14">14天</th><th data-i18n="latest_tracking">最新运单号</th><th data-i18n="latest_transport">最新运输状态</th></tr></thead>
                                 <tbody id="asTableBody"></tbody>
                             </table>
                         </div>
@@ -480,7 +411,7 @@
                         </div>
                     </div>
 
-                    <!-- ===== 产品管理 ===== -->
+                    <!-- 产品管理 -->
                     <div class="page-content" id="page-products">
                         <div class="stats">
                             <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-box"></i></div><div class="stat-number" id="prodTotal">0</div><div class="stat-label" data-i18n="total_products">总产品</div></div>
@@ -524,7 +455,7 @@
                         </div>
                     </div>
 
-                    <!-- ===== 话术管理（列宽自适应 + 分页） ===== -->
+                    <!-- 话术管理 -->
                     <div class="page-content" id="page-scripts">
                         <div class="stats">
                             <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-comment-dots"></i></div><div class="stat-number" id="scriptTotal">0</div><div class="stat-label" data-i18n="total_scripts">总话术</div></div>
@@ -548,20 +479,11 @@
                             <div class="panel-page active" id="page-list">
                                 <div class="table-wrapper">
                                     <table>
-                                        <thead><tr>
-                                            <th class="col-seq" data-i18n="serial">序号</th>
-                                            <th class="col-category" data-i18n="category">分类</th>
-                                            <th class="col-content" data-i18n="content_zh">中文内容</th>
-                                            <th class="col-content" data-i18n="content_pl">波兰语</th>
-                                            <th class="col-content" data-i18n="content_fr">法语</th>
-                                            <th class="col-content" data-i18n="content_en">英语</th>
-                                            <th class="col-actions" style="text-align:center;" data-i18n="actions">操作</th>
-                                        </tr></thead>
+                                        <thead><tr><th class="col-seq" data-i18n="serial">序号</th><th class="col-category" data-i18n="category">分类</th><th class="col-content" data-i18n="content_zh">中文内容</th><th class="col-content" data-i18n="content_pl">波兰语</th><th class="col-content" data-i18n="content_fr">法语</th><th class="col-content" data-i18n="content_en">英语</th><th class="col-actions" style="text-align:center;" data-i18n="actions">操作</th></tr></thead>
                                         <tbody id="scriptTableBody"></tbody>
                                     </table>
                                 </div>
                                 <div id="scriptEmpty" class="empty-state"><i class="fas fa-inbox"></i><p data-i18n="no_scripts">暂无话术</p><div class="sub" data-i18n="click_add_script">点击「添加话术」创建</div></div>
-                                <!-- 分页组件 -->
                                 <div class="pagination" id="scriptPagination">
                                     <span class="page-info" id="scriptPageInfo">显示 1-20 条，共 0 条</span>
                                     <div class="page-btns" id="scriptPageBtns"></div>
@@ -570,7 +492,7 @@
                         </div>
                     </div>
 
-                    <!-- ===== 投诉管理 ===== -->
+                    <!-- 投诉管理 -->
                     <div class="page-content" id="page-complaint">
                         <div class="stats">
                             <div class="stat-card"><div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-number" id="complaintTotal">0</div><div class="stat-label" data-i18n="total_complaints">总申诉</div></div>
@@ -602,24 +524,31 @@
                             <span id="complaintRecordInfo" data-i18n="total_records_prefix">共 0 条</span>
                         </div>
                     </div>
-
-                </div><!-- end content -->
+                </div>
             </main>
-        </div><!-- end app-layout -->
+        </div>
 
         <!-- ===== 弹窗 ===== -->
+        <!-- 系统设置弹窗（修改密码） -->
         <div class="modal-overlay" id="changePasswordModal">
             <div class="modal">
-                <div class="modal-header"><h2 data-i18n="system_settings_title">系统设置</h2><button class="modal-close" id="changePwCloseBtn">&times;</button></div>
+                <div class="modal-header">
+                    <h2 data-i18n="system_settings_title">系统设置</h2>
+                    <button class="modal-close" onclick="closeSystemSettings()">&times;</button>
+                </div>
                 <form id="changePwForm">
                     <div class="form-group"><label data-i18n="old_password">旧密码 <span class="required">*</span></label><input type="password" id="oldPw" required /></div>
                     <div class="form-group"><label data-i18n="new_password">新密码 <span class="required">*</span></label><input type="password" id="newPw" required /></div>
                     <div class="form-group"><label data-i18n="confirm_password">确认新密码 <span class="required">*</span></label><input type="password" id="confirmPw" required /></div>
-                    <div class="modal-footer"><button type="button" class="btn btn-outline" id="changePwCancelBtn" data-i18n="cancel">取消</button><button type="submit" class="btn btn-primary" data-i18n="confirm">确认修改</button></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeSystemSettings()" data-i18n="cancel">取消</button>
+                        <button type="submit" class="btn btn-primary" data-i18n="confirm">确认修改</button>
+                    </div>
                 </form>
             </div>
         </div>
 
+        <!-- 其他弹窗（通用） -->
         <div class="modal-overlay" id="commonModal">
             <div class="modal">
                 <div class="modal-header"><h2 id="commonModalTitle">标题</h2><button class="modal-close" id="commonModalClose">&times;</button></div>
@@ -678,8 +607,7 @@
                 </div>
             </div>
         </div>
-
-    </div><!-- end mainContent -->
+    </div>
 
     <script>
         // =====================================================================
@@ -706,6 +634,43 @@
         document.getElementById('passwordInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') document.getElementById('passwordBtn').click();
         });
+
+        // =====================================================================
+        //  系统设置弹窗控制
+        // =====================================================================
+        function openSystemSettings() {
+            document.getElementById('changePasswordModal').classList.add('active');
+            document.getElementById('oldPw').value = '';
+            document.getElementById('newPw').value = '';
+            document.getElementById('confirmPw').value = '';
+        }
+        function closeSystemSettings() {
+            document.getElementById('changePasswordModal').classList.remove('active');
+        }
+
+        // =====================================================================
+        //  刷新数据（带旋转动画）
+        // =====================================================================
+        function refreshData() {
+            const btn = document.getElementById('refreshBtn');
+            // 添加旋转动画类
+            btn.classList.add('spinning');
+
+            // 执行刷新逻辑
+            const active = document.querySelector('.menu-item[data-menu].active');
+            if (active) {
+                const menu = active.dataset.menu;
+                if (menu === 'afterSales') renderAfterSales();
+                else if (menu === 'products') renderProducts();
+                else if (menu === 'scripts') renderScripts();
+                else if (menu === 'complaint') renderComplaints();
+            }
+
+            // 0.6秒后移除动画类（与CSS动画时长一致）
+            setTimeout(() => {
+                btn.classList.remove('spinning');
+            }, 600);
+        }
 
         // =====================================================================
         //  国际化（i18n）
@@ -827,24 +792,6 @@
 
         const savedTheme = localStorage.getItem('theme_mode') || 'light';
         setTheme(savedTheme);
-
-        // =====================================================================
-        //  系统设置 & 刷新数据（直接全局函数，供 onclick 调用）
-        // =====================================================================
-        function openSystemSettings() {
-            document.getElementById('changePasswordModal').classList.add('active');
-        }
-
-        function refreshData() {
-            const active = document.querySelector('.menu-item[data-menu].active');
-            if (active) {
-                const menu = active.dataset.menu;
-                if (menu === 'afterSales') renderAfterSales();
-                else if (menu === 'products') renderProducts();
-                else if (menu === 'scripts') renderScripts();
-                else if (menu === 'complaint') renderComplaints();
-            }
-        }
 
         // =====================================================================
         //  工具函数
@@ -1041,6 +988,41 @@
         })();
 
         // =====================================================================
+        //  修改密码表单提交
+        // =====================================================================
+        document.getElementById('changePwForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const old = document.getElementById('oldPw').value;
+            const newP = document.getElementById('newPw').value;
+            const confirm = document.getElementById('confirmPw').value;
+
+            if (!verifyPassword(old)) {
+                alert('旧密码错误，请重新输入');
+                document.getElementById('oldPw').focus();
+                return;
+            }
+            if (newP.length < 4) {
+                alert('新密码至少4位');
+                document.getElementById('newPw').focus();
+                return;
+            }
+            if (newP !== confirm) {
+                alert('两次密码不一致，请重新输入');
+                document.getElementById('confirmPw').focus();
+                return;
+            }
+
+            updatePassword(newP);
+
+            if (verifyPassword(newP)) {
+                alert('密码修改成功！');
+                closeSystemSettings();
+            } else {
+                alert('密码修改失败，请重试');
+            }
+        });
+
+        // =====================================================================
         //  初始化
         // =====================================================================
         function initAll() {
@@ -1050,57 +1032,7 @@
             renderScripts();
             renderComplaints();
 
-            // 弹窗关闭事件（由 onclick 打开的弹窗，关闭按钮仍需绑定）
-            document.getElementById('changePwCloseBtn').addEventListener('click', function() {
-                document.getElementById('changePasswordModal').classList.remove('active');
-            });
-            document.getElementById('changePwCancelBtn').addEventListener('click', function() {
-                document.getElementById('changePasswordModal').classList.remove('active');
-            });
-            document.getElementById('changePwForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const old = document.getElementById('oldPw').value;
-                const newP = document.getElementById('newPw').value;
-                const confirm = document.getElementById('confirmPw').value;
-                if (!verifyPassword(old)) { alert('旧密码错误'); return; }
-                if (newP.length < 4) { alert('新密码至少4位'); return; }
-                if (newP !== confirm) { alert('两次密码不一致'); return; }
-                updatePassword(newP);
-                alert('密码修改成功！');
-                document.getElementById('changePasswordModal').classList.remove('active');
-            });
-
-            // 其他全局事件（展开、复制等）
-            document.getElementById('asTableBody').addEventListener('click', function(e) {
-                const btn = e.target.closest('.group-expand-btn');
-                if (!btn) return;
-                const groupId = btn.dataset.groupid;
-                const wrapper = document.querySelector(`.sub-table-wrapper[data-groupid="${groupId}"]`);
-                if (wrapper) {
-                    wrapper.classList.toggle('open');
-                    btn.classList.toggle('collapsed');
-                    btn.classList.toggle('expanded');
-                    const icon = btn.querySelector('i');
-                    if (icon) {
-                        icon.className = wrapper.classList.contains('open') ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
-                    }
-                }
-            });
-
-            document.getElementById('scriptTableBody').addEventListener('click', function(e) {
-                const btn = e.target.closest('.copy-order-btn:not(.toggle-btn)');
-                if (!btn) return;
-                const content = btn.dataset.content;
-                if (content !== undefined) {
-                    try {
-                        const text = JSON.parse(decodeURIComponent(content));
-                        copyText(text, btn);
-                    } catch (e) {
-                        console.error('复制失败:', e);
-                    }
-                }
-            });
-
+            // 其他弹窗关闭事件
             document.getElementById('commonModalClose').addEventListener('click', function() {
                 document.getElementById('commonModal').classList.remove('active');
             });
@@ -1123,35 +1055,1140 @@
                     currentSolutionItemId = null;
                 }
             });
+
+            // 售后展开
+            document.getElementById('asTableBody').addEventListener('click', function(e) {
+                const btn = e.target.closest('.group-expand-btn');
+                if (!btn) return;
+                const groupId = btn.dataset.groupid;
+                const wrapper = document.querySelector(`.sub-table-wrapper[data-groupid="${groupId}"]`);
+                if (wrapper) {
+                    wrapper.classList.toggle('open');
+                    btn.classList.toggle('collapsed');
+                    btn.classList.toggle('expanded');
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.className = wrapper.classList.contains('open') ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+                    }
+                }
+            });
+
+            // 话术复制
+            document.getElementById('scriptTableBody').addEventListener('click', function(e) {
+                const btn = e.target.closest('.copy-order-btn:not(.toggle-btn)');
+                if (!btn) return;
+                const content = btn.dataset.content;
+                if (content !== undefined) {
+                    try {
+                        const text = JSON.parse(decodeURIComponent(content));
+                        copyText(text, btn);
+                    } catch (e) {
+                        console.error('复制失败:', e);
+                    }
+                }
+            });
         }
 
         // =====================================================================
-        //  以下为各模块渲染函数（与之前完全相同，保留所有功能）
+        //  1. 售后管理（仅分组视图）
         // =====================================================================
-        // ... (由于篇幅原因，此处省略完整函数，但实际代码中会包含全部)
-        // 注意：实际生成的完整代码中，这里会包含售后、产品、话术、投诉的完整渲染逻辑。
-        // 在最终交付时，我会确保所有功能完整。
+        const AS_STORAGE_KEY = 'afterSalesData_v4';
+        let asData = loadASData();
+        let asNextId = asData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
 
-        // 为保证代码完整性，以下为占位注释，实际代码中会包含完整内容。
-        // =====================================================================
-        //  1. 售后管理
-        // =====================================================================
-        // ... 完整函数
+        function loadASData() {
+            const saved = localStorage.getItem(AS_STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        parsed.forEach(item => {
+                            if (!item.solutions) item.solutions = [];
+                            item.solutions.forEach(s => {
+                                if (s.trackingNumber === undefined) s.trackingNumber = '';
+                                if (s.trackingStatus === undefined) s.trackingStatus = '';
+                                if (s.remark === undefined) s.remark = '';
+                            });
+                        });
+                        return parsed;
+                    }
+                } catch (e) {}
+            }
+            return [
+                { id: 1, orderId: 'FBN2026042206', shop: 'HUACHUNEBK', signTime: '2026-07-20', feedbackTime: '2026-07-24', reason: '挡泥板非原装', status: '待处理', solutions: [{ content: '返厂维修', createdAt: new Date().toISOString(), trackingNumber: 'SF123456', trackingStatus: '运输中', remark: '' }] },
+                { id: 2, orderId: 'FBN2026042206', shop: 'HUACHUNEBK', signTime: '2026-07-18', feedbackTime: '2026-07-07', reason: '控制器烧毁', status: '已完成', solutions: [{ content: '换货', createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '', remark: '' }] },
+                { id: 3, orderId: 'FBN2026042206', shop: 'HUACHUNEBK', signTime: '2026-07-15', feedbackTime: '2026-06-16', reason: '速度和启动有问题', status: '已完成', solutions: [{ content: '调整', createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '', remark: '' }] },
+                { id: 4, orderId: 'ORD-20260724-001', shop: '官方旗舰店', signTime: '2026-07-20', feedbackTime: '2026-07-24', reason: '音质异常', status: '待处理', solutions: [{ content: '返厂维修', createdAt: new Date().toISOString(), trackingNumber: 'YT987654', trackingStatus: '已签收', remark: '' }] }
+            ];
+        }
+        function saveASData(data) { localStorage.setItem(AS_STORAGE_KEY, JSON.stringify(data)); }
+
+        function getLatestRecord(records) {
+            if (!records || records.length === 0) return null;
+            return records.slice().sort((a, b) => (b.feedbackTime || '').localeCompare(a.feedbackTime || ''))[0];
+        }
+
+        function getLatestSolutionInfo(record) {
+            if (!record || !record.solutions || record.solutions.length === 0) return { trackingNumber: '', trackingStatus: '' };
+            const sorted = record.solutions.slice().sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+            return { trackingNumber: sorted[0].trackingNumber || '', trackingStatus: sorted[0].trackingStatus || '' };
+        }
+
+        function renderAfterSales() {
+            const search = document.getElementById('asSearch').value.trim().toLowerCase();
+            const statusFilter = document.getElementById('asStatusFilter').value;
+            const shopFilter = document.getElementById('asShopFilter').value;
+
+            let filtered = asData.filter(item => {
+                const matchSearch = item.orderId.toLowerCase().includes(search) || item.shop.toLowerCase().includes(search);
+                const matchStatus = statusFilter ? item.status === statusFilter : true;
+                const matchShop = shopFilter ? item.shop === shopFilter : true;
+                return matchSearch && matchStatus && matchShop;
+            });
+            filtered.sort((a, b) => (b.feedbackTime || '').localeCompare(a.feedbackTime || ''));
+
+            document.getElementById('asTotal').textContent = asData.length;
+            document.getElementById('asPending').textContent = asData.filter(d => d.status === '待处理').length;
+            document.getElementById('asCompleted').textContent = asData.filter(d => d.status === '已完成').length;
+            document.getElementById('asRejected').textContent = asData.filter(d => d.status === '已拒绝').length;
+            const orderSet = new Set(asData.map(d => d.orderId).filter(Boolean));
+            document.getElementById('asOrderCount').textContent = orderSet.size;
+
+            const shopSet = new Set(asData.map(d => d.shop).filter(Boolean));
+            const sel = document.getElementById('asShopFilter');
+            const cur = sel.value;
+            sel.innerHTML = '<option value="" data-i18n-all>全部店铺</option>';
+            Array.from(shopSet).sort().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                sel.appendChild(opt);
+            });
+            sel.value = cur;
+
+            const tbody = document.getElementById('asTableBody');
+            const empty = document.getElementById('asEmpty');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                empty.classList.remove('hidden');
+                document.getElementById('asRecordInfo').textContent = i18n[currentLang]['total_records_prefix'].replace('0', '0');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            const groups = {};
+            filtered.forEach(item => {
+                if (!groups[item.orderId]) groups[item.orderId] = [];
+                groups[item.orderId].push(item);
+            });
+            let html = '';
+            const sortedGroups = Object.keys(groups).sort((a, b) => {
+                const latestA = getLatestRecord(groups[a]);
+                const latestB = getLatestRecord(groups[b]);
+                return (latestB.feedbackTime || '').localeCompare(latestA.feedbackTime || '');
+            });
+            sortedGroups.forEach(orderId => {
+                const records = groups[orderId];
+                const latest = getLatestRecord(records);
+                if (!latest) return;
+                const count = records.length;
+                const latestSol = getLatestSolutionInfo(latest);
+                const groupId = 'group-' + orderId.replace(/[^a-zA-Z0-9]/g, '_');
+                html += `<tr class="group-row" data-orderid="${orderId}" data-groupid="${groupId}">
+                    <td><input type="checkbox" class="group-checkbox" data-orderid="${orderId}" /></td>
+                    <td><span class="order-id">${orderId}</span><button class="copy-order-btn" onclick="copyOrderId('${orderId}', this)" title="复制订单号"><i class="fas fa-copy"></i></button><button class="group-expand-btn collapsed" data-groupid="${groupId}" title="展开/收起"><i class="fas fa-chevron-down"></i></button></td>
+                    <td>${latest.shop}</td>
+                    <td>共 ${count} 次</td>
+                    <td>${statusBadge(latest.status)}</td>
+                    <td>${formatDate(latest.feedbackTime)}</td>
+                    <td>${overdueBadge(latest.signTime)}</td>
+                    <td>${daysBadge(latest.signTime)}</td>
+                    <td>${latestSol.trackingNumber||'—'}</td>
+                    <td>${latestSol.trackingStatus||'—'}</td>
+                </tr>`;
+                html += `<tr><td colspan="10" style="padding:0;"><div class="sub-table-wrapper" data-groupid="${groupId}"><table class="sub-table"><tbody>`;
+                const sortedRecords = records.slice().sort((a, b) => (b.feedbackTime || '').localeCompare(a.feedbackTime || ''));
+                sortedRecords.forEach((rec, idx) => {
+                    const solCount = rec.solutions ? rec.solutions.length : 0;
+                    const recSol = getLatestSolutionInfo(rec);
+                    html += `<tr>
+                        <td style="padding-left:40px;"><input type="checkbox" class="sub-checkbox" data-id="${rec.id}" data-orderid="${orderId}" /></td>
+                        <td>#${idx+1}</td>
+                        <td class="reason-col">${rec.reason||'—'}</td>
+                        <td>${statusBadge(rec.status)}</td>
+                        <td>${formatDate(rec.feedbackTime)}</td>
+                        <td>${formatDate(rec.signTime)}</td>
+                        <td>${overdueBadge(rec.signTime)}</td>
+                        <td>${daysBadge(rec.signTime)}</td>
+                        <td>${recSol.trackingNumber||'—'}</td>
+                        <td>${recSol.trackingStatus||'—'}</td>
+                        <td class="sub-actions">
+                            <button class="btn as-copy" data-id="${rec.id}" title="复制"><i class="fas fa-copy"></i></button>
+                            <button class="btn as-edit" data-id="${rec.id}" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="btn as-solution" data-id="${rec.id}" title="方案"><i class="fas fa-clipboard-list"></i>${solCount>0?' '+solCount:''}</button>
+                            <button class="btn as-delete" data-id="${rec.id}" title="删除"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></td></tr>`;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('asRecordInfo').textContent = i18n[currentLang]['total_records_prefix'].replace('0', filtered.length) + `，涉及 ${sortedGroups.length} 个订单`;
+            bindASGroupEvents();
+        }
+
+        function bindASGroupEvents() {
+            document.querySelectorAll('.group-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const orderId = this.dataset.orderid;
+                    document.querySelectorAll(`.sub-checkbox[data-orderid="${orderId}"]`).forEach(sub => sub.checked = this.checked);
+                });
+            });
+            document.querySelectorAll('.sub-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const orderId = this.dataset.orderid;
+                    const subs = document.querySelectorAll(`.sub-checkbox[data-orderid="${orderId}"]`);
+                    const checked = Array.from(subs).filter(c => c.checked).length;
+                    const group = document.querySelector(`.group-checkbox[data-orderid="${orderId}"]`);
+                    if (group) group.checked = (checked === subs.length);
+                });
+            });
+            document.querySelectorAll('.sub-actions .as-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = asData.find(d => d.id === id);
+                    if (item) openASForm('编辑售后', item);
+                });
+            });
+            document.querySelectorAll('.sub-actions .as-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('确定删除该售后记录？')) {
+                        const id = parseInt(this.dataset.id);
+                        asData = asData.filter(d => d.id !== id);
+                        saveASData(asData);
+                        renderAfterSales();
+                    }
+                });
+            });
+            document.querySelectorAll('.sub-actions .as-copy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = asData.find(d => d.id === id);
+                    if (item) {
+                        const copyData = { ...item, id: null, reason: '', solutions: [] };
+                        openASForm('新建售后（复制）', copyData);
+                    }
+                });
+            });
+            document.querySelectorAll('.sub-actions .as-solution').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = asData.find(d => d.id === id);
+                    if (item) openSolutionModal(item);
+                });
+            });
+            document.getElementById('asSelectAll').addEventListener('change', function() {
+                const checked = this.checked;
+                document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = checked);
+                document.querySelectorAll('.sub-checkbox').forEach(cb => cb.checked = checked);
+            });
+            document.getElementById('asBatchDelete').addEventListener('click', function() {
+                const groupChecks = document.querySelectorAll('.group-checkbox:checked');
+                if (groupChecks.length > 0) {
+                    const orderIds = Array.from(groupChecks).map(cb => cb.dataset.orderid);
+                    if (confirm(`确定删除选中订单（${orderIds.join(', ')}）的所有售后记录？`)) {
+                        asData = asData.filter(d => !orderIds.includes(d.orderId));
+                        saveASData(asData);
+                        renderAfterSales();
+                    }
+                    return;
+                }
+                const subChecks = document.querySelectorAll('.sub-checkbox:checked');
+                if (subChecks.length === 0) { alert('请至少勾选一条记录'); return; }
+                const ids = Array.from(subChecks).map(cb => parseInt(cb.dataset.id));
+                if (confirm(`确定删除选中的 ${ids.length} 条记录？`)) {
+                    asData = asData.filter(d => !ids.includes(d.id));
+                    saveASData(asData);
+                    renderAfterSales();
+                }
+            });
+        }
+
+        function openASForm(title, data) {
+            const modal = document.getElementById('commonModal');
+            document.getElementById('commonModalTitle').textContent = title;
+            const fields = document.getElementById('commonFormFields');
+            fields.innerHTML = `
+                <div class="form-group"><label>订单号 <span class="required">*</span></label><input type="text" id="asFOrderId" value="${data?data.orderId:''}" placeholder="例如：ORD-20260724-001" required /></div>
+                <div class="form-group"><label>店铺 <span class="required">*</span></label><input type="text" id="asFShop" value="${data?data.shop:''}" placeholder="店铺名称" required /></div>
+                <div class="form-row">
+                    <div class="form-group"><label>签收时间 <span class="required">*</span></label><input type="text" id="asFSignTime" value="${data?data.signTime:''}" placeholder="2026-07-24" required /></div>
+                    <div class="form-group"><label>反馈时间 <span class="required">*</span></label><input type="text" id="asFFeedbackTime" value="${data?data.feedbackTime:''}" placeholder="2026-07-24" required /></div>
+                </div>
+                <div class="form-group"><label>状态 <span class="required">*</span></label>
+                    <select id="asFStatus"><option value="待处理" ${data&&data.status==='待处理'?'selected':''}>待处理</option><option value="处理中" ${data&&data.status==='处理中'?'selected':''}>处理中</option><option value="已完成" ${data&&data.status==='已完成'?'selected':''}>已完成</option><option value="已拒绝" ${data&&data.status==='已拒绝'?'selected':''}>已拒绝</option></select>
+                </div>
+                <div class="form-group"><label>售后原因</label><textarea id="asFReason" rows="2">${data?data.reason:''}</textarea></div>
+                <div class="form-group"><label>初始方案（可选）</label><textarea id="asFSolution" rows="2" placeholder="首次处理方案">${data&&data.solutions&&data.solutions.length>0?data.solutions[0].content:''}</textarea></div>
+            `;
+            document.getElementById('commonEditId').value = data ? data.id : '';
+            modal.classList.add('active');
+            document.getElementById('commonForm').onsubmit = function(e) {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('commonEditId').value) || 0;
+                const orderId = document.getElementById('asFOrderId').value.trim();
+                const shop = document.getElementById('asFShop').value.trim();
+                const signTime = parseDate(document.getElementById('asFSignTime').value.trim());
+                const feedbackTime = parseDate(document.getElementById('asFFeedbackTime').value.trim());
+                const status = document.getElementById('asFStatus').value;
+                const reason = document.getElementById('asFReason').value.trim();
+                const solution = document.getElementById('asFSolution').value.trim();
+                if (!orderId || !shop || !signTime || !feedbackTime) { alert('请完整填写必填项'); return; }
+                if (id) {
+                    const idx = asData.findIndex(d => d.id === id);
+                    if (idx !== -1) {
+                        const item = asData[idx];
+                        item.orderId = orderId; item.shop = shop; item.signTime = signTime; item.feedbackTime = feedbackTime;
+                        item.status = status; item.reason = reason;
+                        if (solution) {
+                            if (!item.solutions) item.solutions = [];
+                            if (item.solutions.length === 0 || item.solutions[0].content !== solution) {
+                                item.solutions.unshift({ content: solution, createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '', remark: '' });
+                            }
+                        }
+                    }
+                } else {
+                    asData.push({ id: asNextId++, orderId, shop, signTime, feedbackTime, status, reason,
+                        solutions: solution ? [{ content: solution, createdAt: new Date().toISOString(), trackingNumber: '', trackingStatus: '', remark: '' }] : [] });
+                }
+                saveASData(asData);
+                modal.classList.remove('active');
+                renderAfterSales();
+            };
+        }
+
+        document.getElementById('asAdd').addEventListener('click', function() { openASForm('新建售后', null); });
+        document.getElementById('asSearchBtn').addEventListener('click', renderAfterSales);
+        document.getElementById('asSearch').addEventListener('keyup', e => { if (e.key === 'Enter') renderAfterSales(); });
+        document.getElementById('asStatusFilter').addEventListener('change', renderAfterSales);
+        document.getElementById('asShopFilter').addEventListener('change', renderAfterSales);
+        document.getElementById('asClearFilter').addEventListener('click', function() {
+            document.getElementById('asSearch').value = '';
+            document.getElementById('asStatusFilter').value = '';
+            document.getElementById('asShopFilter').value = '';
+            renderAfterSales();
+        });
+
+        document.getElementById('asExport').addEventListener('click', function() {
+            const headers = ['订单号','店铺','签收时间','反馈时间','是否过保','是否过14天','原因','状态','方案内容','方案运单号','方案运输状态','方案备注'];
+            const rows = [];
+            asData.forEach(item => {
+                const solutions = item.solutions && item.solutions.length > 0 ? item.solutions : [{ content:'', trackingNumber:'', trackingStatus:'', remark:'' }];
+                solutions.forEach(sol => {
+                    rows.push([item.orderId, item.shop, item.signTime||'', item.feedbackTime||'', isOverdue(item.signTime)?'已过保':'保修中', isOver14Days(item.signTime)?'已过14天':'14天内', item.reason||'', item.status, sol.content||'', sol.trackingNumber||'', sol.trackingStatus||'', sol.remark||'']);
+                });
+            });
+            const wsData = [headers, ...rows];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            XLSX.utils.book_append_sheet(wb, ws, '售后数据');
+            XLSX.writeFile(wb, `售后数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+        });
+        document.getElementById('asImport').addEventListener('click', function() { document.getElementById('asFileInput').click(); });
+        document.getElementById('asFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                    if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
+                    const groups = {};
+                    jsonData.forEach(row => {
+                        const orderId = (row['订单号'] || '').toString().trim();
+                        if (!orderId) return;
+                        if (!groups[orderId]) groups[orderId] = [];
+                        groups[orderId].push(row);
+                    });
+                    const imported = [];
+                    for (const [orderId, rows] of Object.entries(groups)) {
+                        const firstRow = rows[0];
+                        const shop = (firstRow['店铺'] || '').toString().trim();
+                        const signTime = (firstRow['签收时间'] || '').toString().trim();
+                        const feedbackTime = (firstRow['反馈时间'] || '').toString().trim();
+                        const reason = (firstRow['原因'] || '').toString().trim();
+                        const status = (firstRow['状态'] || '').toString().trim();
+                        if (!shop || !signTime || !feedbackTime || !status) throw new Error(`订单 ${orderId} 缺少必填字段`);
+                        const validStatus = ['待处理','处理中','已完成','已拒绝'];
+                        if (!validStatus.includes(status)) throw new Error(`订单 ${orderId} 状态无效`);
+                        const solutions = [];
+                        rows.forEach(row => {
+                            const content = (row['方案内容'] || '').toString().trim();
+                            const trackingNumber = (row['方案运单号'] || '').toString().trim();
+                            const trackingStatus = (row['方案运输状态'] || '').toString().trim();
+                            const remark = (row['方案备注'] || '').toString().trim();
+                            if (content) solutions.push({ content, trackingNumber, trackingStatus, remark, createdAt: new Date().toISOString() });
+                        });
+                        imported.push({ id: asNextId++, orderId, shop, signTime, feedbackTime, reason, status, solutions });
+                    }
+                    if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有数据？`)) {
+                        asData = imported;
+                        asNextId = asData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
+                        saveASData(asData);
+                        renderAfterSales();
+                        alert(`成功导入 ${imported.length} 条数据！`);
+                    }
+                } catch (err) { alert('导入失败：' + err.message); }
+            };
+            reader.readAsArrayBuffer(file);
+            this.value = '';
+        });
+
+        // ---- 方案管理 ----
+        const solutionOverlay = document.getElementById('solutionModalOverlay');
+        const solutionList = document.getElementById('solutionList');
+        const solutionForm = document.getElementById('solutionForm');
+        const newSolutionContent = document.getElementById('newSolutionContent');
+        const newSolutionTracking = document.getElementById('newSolutionTracking');
+        const newSolutionTrackingStatus = document.getElementById('newSolutionTrackingStatus');
+        const newSolutionRemark = document.getElementById('newSolutionRemark');
+        const addSolutionSubmitBtn = document.getElementById('addSolutionSubmitBtn');
+        const cancelSolutionEdit = document.getElementById('cancelSolutionEdit');
+        const solutionEditIndex = document.getElementById('solutionEditIndex');
+        let currentSolutionItemId = null;
+
+        function openSolutionModal(item) {
+            currentSolutionItemId = item.id;
+            document.getElementById('solutionModalTitle').innerHTML = `方案管理 - ${item.orderId} <button class="copy-order-btn" onclick="copyOrderId('${item.orderId}', this)" title="复制订单号" style="font-size:14px;margin-left:4px;"><i class="fas fa-copy"></i></button>`;
+            solutionEditIndex.value = -1;
+            cancelSolutionEdit.style.display = 'none';
+            addSolutionSubmitBtn.innerHTML = '<i class="fas fa-plus"></i> 添加方案';
+            renderSolutions(item);
+            solutionForm.reset();
+            newSolutionContent.value = '';
+            newSolutionTracking.value = '';
+            newSolutionTrackingStatus.value = '';
+            newSolutionRemark.value = '';
+            solutionOverlay.classList.add('active');
+        }
+
+        function renderSolutions(item) {
+            const solutions = item.solutions || [];
+            if (solutions.length === 0) { solutionList.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:12px;">暂无方案</p>'; return; }
+            const sorted = [...solutions].reverse();
+            let html = '';
+            sorted.forEach((s, index) => {
+                const originalIndex = solutions.length - 1 - index;
+                const time = s.createdAt ? new Date(s.createdAt).toLocaleString('zh-CN', { hour12: false }) : '';
+                const tags = [s.trackingNumber ? `运单: ${s.trackingNumber}` : '', s.trackingStatus ? `状态: ${s.trackingStatus}` : ''].filter(Boolean).join(' · ');
+                const remarkHtml = s.remark ? `<div class="remark">📝 ${s.remark}</div>` : '';
+                html += `<div class="solution-item" data-original-index="${originalIndex}">
+                    <div class="left"><div class="meta"><span>#${solutions.length - index} · ${time}</span>${tags ? `<span class="tag">${tags}</span>` : ''}</div>
+                    <div class="content">${s.content}</div>${remarkHtml}</div>
+                    <div class="action">
+                        <button class="btn btn-edit-solution" data-original-index="${originalIndex}"><i class="fas fa-pen"></i></button>
+                        <button class="btn btn-delete-solution" data-original-index="${originalIndex}"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>`;
+            });
+            solutionList.innerHTML = html;
+            solutionList.querySelectorAll('.btn-edit-solution').forEach(btn => {
+                btn.addEventListener('click', function(e) { e.stopPropagation(); const idx = parseInt(this.dataset.originalIndex); startEditSolution(idx); });
+            });
+            solutionList.querySelectorAll('.btn-delete-solution').forEach(btn => {
+                btn.addEventListener('click', function(e) { e.stopPropagation(); const idx = parseInt(this.dataset.originalIndex); if (confirm('确定删除该方案吗？')) deleteSolution(idx); });
+            });
+        }
+
+        function startEditSolution(index) {
+            const item = asData.find(d => d.id === currentSolutionItemId);
+            if (!item) return;
+            const solution = item.solutions[index];
+            if (!solution) return;
+            solutionEditIndex.value = index;
+            newSolutionContent.value = solution.content || '';
+            newSolutionTracking.value = solution.trackingNumber || '';
+            newSolutionTrackingStatus.value = solution.trackingStatus || '';
+            newSolutionRemark.value = solution.remark || '';
+            addSolutionSubmitBtn.innerHTML = '<i class="fas fa-save"></i> 更新方案';
+            cancelSolutionEdit.style.display = 'inline-flex';
+        }
+
+        function deleteSolution(index) {
+            const item = asData.find(d => d.id === currentSolutionItemId);
+            if (!item) return;
+            if (index >= 0 && index < item.solutions.length) {
+                item.solutions.splice(index, 1);
+                saveASData(asData);
+                renderSolutions(item);
+                renderAfterSales();
+                if (item.solutions.length === 0) renderSolutions(item);
+            }
+        }
+
+        solutionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = newSolutionContent.value.trim();
+            const trackingNumber = newSolutionTracking.value.trim();
+            const trackingStatus = newSolutionTrackingStatus.value;
+            const remark = newSolutionRemark.value.trim();
+            if (!content) { alert('请输入方案内容'); return; }
+            const item = asData.find(d => d.id === currentSolutionItemId);
+            if (!item) { alert('售后单不存在'); return; }
+            if (!item.solutions) item.solutions = [];
+            const editIdx = parseInt(solutionEditIndex.value);
+            if (editIdx === -1) {
+                item.solutions.push({ content, trackingNumber, trackingStatus, remark, createdAt: new Date().toISOString() });
+            } else {
+                const sol = item.solutions[editIdx];
+                if (sol) { sol.content = content; sol.trackingNumber = trackingNumber; sol.trackingStatus = trackingStatus; sol.remark = remark; }
+                solutionEditIndex.value = -1;
+                addSolutionSubmitBtn.innerHTML = '<i class="fas fa-plus"></i> 添加方案';
+                cancelSolutionEdit.style.display = 'none';
+            }
+            saveASData(asData);
+            renderSolutions(item);
+            renderAfterSales();
+            newSolutionContent.value = '';
+            newSolutionTracking.value = '';
+            newSolutionTrackingStatus.value = '';
+            newSolutionRemark.value = '';
+        });
+        cancelSolutionEdit.addEventListener('click', function() {
+            solutionEditIndex.value = -1;
+            addSolutionSubmitBtn.innerHTML = '<i class="fas fa-plus"></i> 添加方案';
+            cancelSolutionEdit.style.display = 'none';
+            newSolutionContent.value = '';
+            newSolutionTracking.value = '';
+            newSolutionTrackingStatus.value = '';
+            newSolutionRemark.value = '';
+        });
+
         // =====================================================================
         //  2. 产品管理
         // =====================================================================
-        // ... 完整函数
+        const PROD_STORAGE_KEY = 'productData';
+        let prodData = JSON.parse(localStorage.getItem(PROD_STORAGE_KEY) || '[]');
+        let prodNextId = prodData.reduce((max, d) => Math.max(max, d.id || 0), 0) + 1;
+        let selectedShop = null, selectedBrand = null;
+        function saveProdData(data) { localStorage.setItem(PROD_STORAGE_KEY, JSON.stringify(data)); }
+        function getShops() { return Array.from(new Set(prodData.map(d => d.shop).filter(Boolean))).sort(); }
+        function getBrandsByShop(shop) { return Array.from(new Set(prodData.filter(d => d.shop === shop).map(d => d.brand).filter(Boolean))).sort(); }
+        function getProductsByBrand(shop, brand) { return prodData.filter(d => d.shop === shop && d.brand === brand); }
+        prodData.forEach(item => { if (!item.status) item.status = '在售'; });
+
+        function renderProducts() {
+            const search = document.getElementById('prodSearch').value.trim().toLowerCase();
+            const shops = getShops();
+            const shopList = document.getElementById('shopList');
+            const brandList = document.getElementById('brandList');
+
+            document.getElementById('prodTotal').textContent = prodData.length;
+            document.getElementById('prodShops').textContent = shops.length;
+
+            if (shops.length === 0) {
+                shopList.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px;">暂无店铺</div>`;
+                brandList.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px;">请选择店铺</div>`;
+                document.getElementById('prodTableBody').innerHTML = '';
+                document.getElementById('prodEmpty').classList.remove('hidden');
+                document.getElementById('shopCount').textContent = '0';
+                document.getElementById('brandCount').textContent = '0';
+                document.getElementById('productCount').textContent = '0';
+                document.getElementById('prodRecordInfo').textContent = '共 0 条';
+                return;
+            }
+            if (!selectedShop || !shops.includes(selectedShop)) selectedShop = shops[0];
+            if (search) {
+                const searchResultShops = new Set(prodData.filter(d => d.brand.toLowerCase().includes(search) || d.model.toLowerCase().includes(search) || d.shop.toLowerCase().includes(search)).map(d => d.shop));
+                if (searchResultShops.size > 0) selectedShop = Array.from(searchResultShops)[0];
+            }
+
+            let shopHtml = '';
+            shops.forEach(shop => {
+                const isActive = shop === selectedShop;
+                shopHtml += `<div class="prod-nav-item ${isActive ? 'active' : ''}" data-shop="${shop}"><span class="nav-icon"><i class="fas fa-store"></i></span><span class="nav-name">${shop}</span></div>`;
+            });
+            shopList.innerHTML = shopHtml;
+            document.getElementById('shopCount').textContent = shops.length;
+            shopList.querySelectorAll('.prod-nav-item').forEach(el => {
+                el.addEventListener('click', function() { selectedShop = this.dataset.shop; selectedBrand = null; renderProducts(); });
+            });
+
+            const brands = getBrandsByShop(selectedShop);
+            if (brands.length === 0) {
+                brandList.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px;">该店铺下暂无品牌</div>`;
+                document.getElementById('brandCount').textContent = '0';
+                document.getElementById('prodTableBody').innerHTML = '';
+                document.getElementById('prodEmpty').classList.remove('hidden');
+                document.getElementById('productCount').textContent = '0';
+                document.getElementById('prodRecordInfo').textContent = '共 0 条';
+                return;
+            }
+            if (!selectedBrand || !brands.includes(selectedBrand)) selectedBrand = brands[0];
+            if (search) {
+                const searchResultBrands = prodData.filter(d => d.shop === selectedShop && (d.brand.toLowerCase().includes(search) || d.model.toLowerCase().includes(search))).map(d => d.brand);
+                if (searchResultBrands.length > 0) selectedBrand = searchResultBrands[0];
+            }
+
+            let brandHtml = '';
+            brands.forEach(brand => {
+                const isActive = brand === selectedBrand;
+                brandHtml += `<div class="prod-nav-item ${isActive ? 'active' : ''}" data-brand="${brand}"><span class="nav-icon"><i class="fas fa-tag"></i></span><span class="nav-name">${brand}</span><span class="nav-badge">${getProductsByBrand(selectedShop, brand).length}</span></div>`;
+            });
+            brandList.innerHTML = brandHtml;
+            document.getElementById('brandCount').textContent = brands.length;
+            brandList.querySelectorAll('.prod-nav-item').forEach(el => {
+                el.addEventListener('click', function() { selectedBrand = this.dataset.brand; renderProducts(); });
+            });
+
+            let products = getProductsByBrand(selectedShop, selectedBrand);
+            if (search) products = products.filter(d => d.brand.toLowerCase().includes(search) || d.model.toLowerCase().includes(search) || d.shop.toLowerCase().includes(search));
+
+            const tbody = document.getElementById('prodTableBody');
+            const empty = document.getElementById('prodEmpty');
+            document.getElementById('productCount').textContent = products.length;
+            if (products.length === 0) {
+                tbody.innerHTML = '';
+                empty.classList.remove('hidden');
+                document.getElementById('prodRecordInfo').textContent = '共 0 条';
+                return;
+            }
+            empty.classList.add('hidden');
+            let html = '';
+            products.forEach(item => {
+                const statusDisplay = item.status === '已下架' ? '<span style="color:var(--color-danger);">已下架</span>' : '<span style="color:var(--color-success);">在售</span>';
+                html += `<tr><td>${item.model}</td><td>${statusDisplay}</td><td><div class="action-btns"><button class="btn prod-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button><button class="btn prod-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div></td></tr>`;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('prodRecordInfo').textContent = `共 ${products.length} 条`;
+
+            tbody.querySelectorAll('.prod-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = prodData.find(d => d.id === id);
+                    if (item) openProdForm('编辑产品', item);
+                });
+            });
+            tbody.querySelectorAll('.prod-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('确定删除？')) {
+                        const id = parseInt(this.dataset.id);
+                        prodData = prodData.filter(d => d.id !== id);
+                        saveProdData(prodData);
+                        renderProducts();
+                    }
+                });
+            });
+        }
+
+        function openProdForm(title, data) {
+            const modal = document.getElementById('commonModal');
+            document.getElementById('commonModalTitle').textContent = title;
+            document.getElementById('commonFormFields').innerHTML = `
+                <div class="form-group"><label>品牌 <span class="required">*</span></label><input type="text" id="prodFBrand" value="${data?data.brand:''}" placeholder="例如：ENGWE" required /></div>
+                <div class="form-group"><label>型号 <span class="required">*</span></label><input type="text" id="prodFModel" value="${data?data.model:''}" placeholder="例如：EP-2 3.0 BOOST-BK" required /></div>
+                <div class="form-group"><label>所属店铺 <span class="required">*</span></label><input type="text" id="prodFShop" value="${data?data.shop:''}" placeholder="填写店铺名称" required /></div>
+                <div class="form-group"><label>上架状态</label><select id="prodFStatus"><option value="在售" ${data&&data.status==='在售'?'selected':''}>在售</option><option value="已下架" ${data&&data.status==='已下架'?'selected':''}>已下架</option></select></div>
+            `;
+            document.getElementById('commonEditId').value = data ? data.id : '';
+            modal.classList.add('active');
+            document.getElementById('commonForm').onsubmit = function(e) {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('commonEditId').value) || 0;
+                const brand = document.getElementById('prodFBrand').value.trim();
+                const model = document.getElementById('prodFModel').value.trim();
+                const shop = document.getElementById('prodFShop').value.trim();
+                const status = document.getElementById('prodFStatus').value;
+                if (!brand || !model || !shop) { alert('请完整填写品牌、型号和店铺'); return; }
+                if (id) {
+                    const idx = prodData.findIndex(d => d.id === id);
+                    if (idx !== -1) { prodData[idx] = { ...prodData[idx], brand, model, shop, status }; }
+                } else {
+                    prodData.push({ id: prodNextId++, brand, model, shop, status });
+                }
+                saveProdData(prodData);
+                modal.classList.remove('active');
+                renderProducts();
+            };
+        }
+        document.getElementById('prodAdd').addEventListener('click', function() { openProdForm('添加产品', null); });
+        document.getElementById('prodSearchBtn').addEventListener('click', renderProducts);
+        document.getElementById('prodSearch').addEventListener('keyup', e => { if (e.key === 'Enter') renderProducts(); });
+
+        document.getElementById('prodExport').addEventListener('click', function() {
+            const headers = ['品牌','型号','所属店铺','上架状态'];
+            const rows = prodData.map(item => [item.brand, item.model, item.shop, item.status||'在售']);
+            const wsData = [headers, ...rows];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            XLSX.utils.book_append_sheet(wb, ws, '产品数据');
+            XLSX.writeFile(wb, `产品数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+        });
+        document.getElementById('prodImport').addEventListener('click', function() { document.getElementById('prodFileInput').click(); });
+        document.getElementById('prodFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                    if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
+                    let addedCount = 0, updatedCount = 0;
+                    jsonData.forEach(row => {
+                        const brand = (row['品牌'] || '').toString().trim();
+                        const model = (row['型号'] || '').toString().trim();
+                        const shop = (row['所属店铺'] || '').toString().trim();
+                        let status = (row['上架状态'] || '在售').toString().trim();
+                        if (!['在售','已下架'].includes(status)) status = '在售';
+                        if (!brand || !model || !shop) throw new Error('存在行缺少品牌、型号或店铺');
+                        const existingIndex = prodData.findIndex(item => item.brand === brand && item.model === model && item.shop === shop);
+                        if (existingIndex !== -1) {
+                            prodData[existingIndex].status = status;
+                            updatedCount++;
+                        } else {
+                            prodData.push({ id: prodNextId++, brand, model, shop, status });
+                            addedCount++;
+                        }
+                    });
+                    saveProdData(prodData);
+                    renderProducts();
+                    alert(`导入完成！新增 ${addedCount} 条，更新 ${updatedCount} 条。`);
+                } catch (err) { alert('导入失败：' + err.message); }
+            };
+            reader.readAsArrayBuffer(file);
+            this.value = '';
+        });
+
         // =====================================================================
         //  3. 话术管理
         // =====================================================================
-        // ... 完整函数
+        const SCRIPT_STORAGE_KEY = 'scriptData';
+        let scriptData = JSON.parse(localStorage.getItem(SCRIPT_STORAGE_KEY) || '[]');
+        function saveScriptData(data) { localStorage.setItem(SCRIPT_STORAGE_KEY, JSON.stringify(data)); }
+        let scriptNextId = scriptData.reduce((max, d) => Math.max(max, d.id || 0), 0) + 1;
+
+        let scriptCurrentPage = 1;
+        const scriptPageSize = 20;
+
+        function renderScripts() {
+            const search = document.getElementById('scriptSearch').value.trim().toLowerCase();
+            const catFilter = document.getElementById('scriptCategoryFilter').value;
+
+            let filtered = scriptData.filter(item => {
+                const matchSearch = (item.category||'').toLowerCase().includes(search) ||
+                    (item.contentZh||'').toLowerCase().includes(search) ||
+                    (item.contentPl||'').toLowerCase().includes(search) ||
+                    (item.contentFr||'').toLowerCase().includes(search) ||
+                    (item.contentEn||'').toLowerCase().includes(search);
+                const matchCat = catFilter ? item.category === catFilter : true;
+                return matchSearch && matchCat;
+            });
+
+            document.getElementById('scriptTotal').textContent = scriptData.length;
+            const cats = new Set(scriptData.map(d => d.category).filter(Boolean));
+            document.getElementById('scriptCategories').textContent = cats.size;
+
+            const total = filtered.length;
+            const totalPages = Math.max(1, Math.ceil(total / scriptPageSize));
+            if (scriptCurrentPage > totalPages) scriptCurrentPage = totalPages;
+            const start = (scriptCurrentPage - 1) * scriptPageSize;
+            const end = Math.min(start + scriptPageSize, total);
+            const pageData = filtered.slice(start, end);
+
+            const tbody = document.getElementById('scriptTableBody');
+            const empty = document.getElementById('scriptEmpty');
+            const pagination = document.getElementById('scriptPagination');
+
+            if (total === 0) {
+                tbody.innerHTML = '';
+                empty.classList.remove('hidden');
+                pagination.style.display = 'none';
+                document.getElementById('scriptRecordInfo').textContent = '共 0 条';
+                return;
+            }
+            empty.classList.add('hidden');
+            pagination.style.display = 'flex';
+
+            let html = '';
+            pageData.forEach((item, index) => {
+                const seq = start + index + 1;
+                const zhBtn = item.contentZh ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentZh))}" title="复制中文"><i class="fas fa-copy"></i></button>` : '';
+                const plBtn = item.contentPl ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentPl))}" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
+                const frBtn = item.contentFr ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentFr))}" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
+                const enBtn = item.contentEn ? `<button class="copy-order-btn" data-content="${encodeURIComponent(JSON.stringify(item.contentEn))}" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
+
+                const buildCell = (content, btnHtml) => {
+                    if (!content || !content.trim()) return `<span style="color:var(--text-muted);">—</span>`;
+                    const likelyLong = content.length > 30 || content.includes('\n');
+                    const expandBtn = likelyLong ? `<button class="copy-order-btn toggle-btn" onclick="toggleScriptExpand(this)" title="展开"><i class="fas fa-chevron-down"></i></button>` : '';
+                    return `<div class="script-cell-wrapper">
+                        <span class="script-text">${content}</span>
+                        <span class="script-actions">${expandBtn}${btnHtml}</span>
+                    </div>`;
+                };
+
+                html += `<tr>
+                    <td class="col-seq">${seq}</td>
+                    <td class="col-category">${item.category}</td>
+                    <td class="col-content">${buildCell(item.contentZh, zhBtn)}</td>
+                    <td class="col-content">${buildCell(item.contentPl, plBtn)}</td>
+                    <td class="col-content">${buildCell(item.contentFr, frBtn)}</td>
+                    <td class="col-content">${buildCell(item.contentEn, enBtn)}</td>
+                    <td class="col-actions">
+                        <div class="action-btns">
+                            <button class="btn script-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn script-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+
+            tbody.querySelectorAll('.script-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = scriptData.find(d => d.id === id);
+                    if (item) openScriptForm('编辑话术', item);
+                });
+            });
+            tbody.querySelectorAll('.script-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('确定删除？')) {
+                        const id = parseInt(this.dataset.id);
+                        scriptData = scriptData.filter(d => d.id !== id);
+                        saveScriptData(scriptData);
+                        renderScripts();
+                    }
+                });
+            });
+
+            document.getElementById('scriptRecordInfo').textContent = `共 ${total} 条`;
+            const pageInfo = document.getElementById('scriptPageInfo');
+            pageInfo.textContent = total > 0 ? `显示 ${start+1}-${end} 条，共 ${total} 条` : '共 0 条';
+
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.getElementById('scriptPageBtns');
+            let html = '';
+            html += `<button class="page-prev" ${scriptCurrentPage <= 1 ? 'disabled' : ''} data-page="${scriptCurrentPage - 1}"><i class="fas fa-chevron-left"></i></button>`;
+
+            const maxVisible = 5;
+            let startPage = Math.max(1, scriptCurrentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button data-page="1">1</button>`;
+                if (startPage > 2) html += `<span class="ellipsis">…</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button data-page="${i}" class="${i === scriptCurrentPage ? 'active' : ''}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="ellipsis">…</span>`;
+                html += `<button data-page="${totalPages}">${totalPages}</button>`;
+            }
+
+            html += `<button class="page-next" ${scriptCurrentPage >= totalPages ? 'disabled' : ''} data-page="${scriptCurrentPage + 1}"><i class="fas fa-chevron-right"></i></button>`;
+
+            container.innerHTML = html;
+
+            container.querySelectorAll('button[data-page]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = parseInt(this.dataset.page);
+                    if (page >= 1 && page <= totalPages && page !== scriptCurrentPage) {
+                        scriptCurrentPage = page;
+                        renderScripts();
+                    }
+                });
+            });
+        }
+
+        function openScriptForm(title, data) {
+            const modal = document.getElementById('commonModal');
+            document.getElementById('commonModalTitle').textContent = title;
+            document.getElementById('commonFormFields').innerHTML = `
+                <div class="form-group"><label>分类 <span class="required">*</span></label>
+                    <select id="scriptFCategory" required>
+                        <option value="售前" ${data&&data.category==='售前'?'selected':''}>售前</option>
+                        <option value="售后" ${data&&data.category==='售后'?'selected':''}>售后</option>
+                        <option value="物流" ${data&&data.category==='物流'?'selected':''}>物流</option>
+                        <option value="产品" ${data&&data.category==='产品'?'selected':''}>产品</option>
+                        <option value="其他" ${data&&data.category==='其他'?'selected':''}>其他</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>中文内容</label><textarea id="scriptFContentZh" rows="2">${data?data.contentZh:''}</textarea></div>
+                <div class="form-group"><label>波兰语 (Polski)</label><textarea id="scriptFContentPl" rows="2">${data?data.contentPl:''}</textarea></div>
+                <div class="form-group"><label>法语 (Français)</label><textarea id="scriptFContentFr" rows="2">${data?data.contentFr:''}</textarea></div>
+                <div class="form-group"><label>英语 (English)</label><textarea id="scriptFContentEn" rows="2">${data?data.contentEn:''}</textarea></div>
+            `;
+            document.getElementById('commonEditId').value = data ? data.id : '';
+            modal.classList.add('active');
+            document.getElementById('commonForm').onsubmit = function(e) {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('commonEditId').value) || 0;
+                const category = document.getElementById('scriptFCategory').value;
+                const contentZh = document.getElementById('scriptFContentZh').value.trim();
+                const contentPl = document.getElementById('scriptFContentPl').value.trim();
+                const contentFr = document.getElementById('scriptFContentFr').value.trim();
+                const contentEn = document.getElementById('scriptFContentEn').value.trim();
+                if (!category) { alert('请选择分类'); return; }
+                if (id) {
+                    const idx = scriptData.findIndex(d => d.id === id);
+                    if (idx !== -1) { scriptData[idx] = { ...scriptData[idx], category, contentZh, contentPl, contentFr, contentEn }; }
+                } else {
+                    scriptData.push({ id: scriptNextId++, category, contentZh, contentPl, contentFr, contentEn });
+                }
+                saveScriptData(scriptData);
+                modal.classList.remove('active');
+                renderScripts();
+            };
+        }
+
+        document.getElementById('scriptAdd').addEventListener('click', function() { openScriptForm('添加话术', null); });
+        document.getElementById('scriptSearchBtn').addEventListener('click', function() { scriptCurrentPage = 1; renderScripts(); });
+        document.getElementById('scriptSearch').addEventListener('keyup', e => { if (e.key === 'Enter') { scriptCurrentPage = 1; renderScripts(); } });
+        document.getElementById('scriptCategoryFilter').addEventListener('change', function() { scriptCurrentPage = 1; renderScripts(); });
+        document.getElementById('scriptClearFilter').addEventListener('click', function() {
+            document.getElementById('scriptSearch').value = '';
+            document.getElementById('scriptCategoryFilter').value = '';
+            scriptCurrentPage = 1;
+            renderScripts();
+        });
+        document.getElementById('scriptExport').addEventListener('click', function() {
+            const headers = ['分类','中文内容','波兰语','法语','英语'];
+            const rows = scriptData.map(item => [item.category||'其他', item.contentZh||'', item.contentPl||'', item.contentFr||'', item.contentEn||'']);
+            const wsData = [headers, ...rows];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            XLSX.utils.book_append_sheet(wb, ws, '话术数据');
+            XLSX.writeFile(wb, `话术数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+        });
+        document.getElementById('scriptImport').addEventListener('click', function() { document.getElementById('scriptFileInput').click(); });
+        document.getElementById('scriptFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                    if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
+                    const imported = jsonData.map(row => ({
+                        id: scriptNextId++,
+                        category: (row['分类']||'').toString().trim()||'其他',
+                        contentZh: (row['中文内容']||'').toString().trim(),
+                        contentPl: (row['波兰语']||'').toString().trim(),
+                        contentFr: (row['法语']||'').toString().trim(),
+                        contentEn: (row['英语']||'').toString().trim()
+                    }));
+                    if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有话术？`)) {
+                        scriptData = imported;
+                        scriptNextId = scriptData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
+                        saveScriptData(scriptData);
+                        renderScripts();
+                        alert(`成功导入 ${imported.length} 条话术！`);
+                    }
+                } catch (err) { alert('导入失败：' + err.message); }
+            };
+            reader.readAsArrayBuffer(file);
+            this.value = '';
+        });
+
         // =====================================================================
         //  4. 投诉管理
         // =====================================================================
-        // ... 完整函数
+        const COMPLAINT_STORAGE_KEY = 'complaintData';
+        let complaintData = JSON.parse(localStorage.getItem(COMPLAINT_STORAGE_KEY) || '[]');
+        function saveComplaintData(data) { localStorage.setItem(COMPLAINT_STORAGE_KEY, JSON.stringify(data)); }
+        let complaintNextId = complaintData.reduce((max, d) => Math.max(max, d.id || 0), 0) + 1;
 
-        // 由于代码过长，此处仅作示意，实际交付时包含所有完整函数。
-        // 用户已确认过之前功能，本次仅修复系统设置点击无反应的问题。
+        function renderComplaints() {
+            const search = document.getElementById('complaintSearch').value.trim().toLowerCase();
+            const platformFilter = document.getElementById('complaintPlatformFilter').value;
+            const shopFilter = document.getElementById('complaintShopFilter').value;
+            const resolvedFilter = document.getElementById('complaintResolvedFilter').value;
+
+            const shopSet = new Set(complaintData.map(d => d.shop).filter(Boolean));
+            const shopSelect = document.getElementById('complaintShopFilter');
+            const currentShop = shopSelect.value;
+            shopSelect.innerHTML = '<option value="" data-i18n-all>全部店铺</option>';
+            Array.from(shopSet).sort().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                shopSelect.appendChild(opt);
+            });
+            shopSelect.value = currentShop;
+
+            let filtered = complaintData.filter(item => {
+                const matchSearch = item.orderId.toLowerCase().includes(search) || item.shop.toLowerCase().includes(search) || item.content.toLowerCase().includes(search);
+                const matchPlatform = platformFilter ? item.platform === platformFilter : true;
+                const matchShop = shopFilter ? item.shop === shopFilter : true;
+                const matchResolved = resolvedFilter ? (item.resolved ? '是' : '否') === resolvedFilter : true;
+                return matchSearch && matchPlatform && matchShop && matchResolved;
+            });
+            filtered.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+            document.getElementById('complaintTotal').textContent = complaintData.length;
+            document.getElementById('complaintPlatforms').textContent = new Set(complaintData.map(d => d.platform).filter(Boolean)).size;
+            document.getElementById('complaintShops').textContent = shopSet.size;
+            document.getElementById('complaintPending').textContent = complaintData.filter(d => !d.resolved).length;
+
+            const tbody = document.getElementById('complaintTableBody');
+            const empty = document.getElementById('complaintEmpty');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                empty.classList.remove('hidden');
+                document.getElementById('complaintRecordInfo').textContent = '共 0 条';
+                return;
+            }
+            empty.classList.add('hidden');
+            let html = '';
+            filtered.forEach(item => {
+                const resolvedText = item.resolved ? '是' : '否';
+                const resolvedColor = item.resolved ? '#d1fae5 #065f46' : '#fee2e2 #991b1b';
+                const [bg, color] = resolvedColor.split(' ');
+                html += `<tr>
+                    <td><span class="order-id">${item.orderId}</span><button class="copy-order-btn" onclick="copyOrderId('${item.orderId}', this)" title="复制订单号"><i class="fas fa-copy"></i></button></td>
+                    <td>${item.shop}</td>
+                    <td>${item.platform}</td>
+                    <td style="max-width:200px;word-break:break-word;">${item.content}</td>
+                    <td><span style="display:inline-block;padding:2px 12px;border-radius:30px;font-size:11px;font-weight:500;background:${bg};color:${color};">${resolvedText}</span></td>
+                    <td style="max-width:150px;word-break:break-word;">${item.solution||'—'}</td>
+                    <td>${item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN',{hour12:false}) : '—'}</td>
+                    <td><div class="action-btns"><button class="btn complaint-edit" data-id="${item.id}"><i class="fas fa-edit"></i></button><button class="btn complaint-delete" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></div></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('complaintRecordInfo').textContent = `共 ${filtered.length} 条`;
+
+            tbody.querySelectorAll('.complaint-edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    const item = complaintData.find(d => d.id === id);
+                    if (item) openComplaintForm('编辑申诉', item);
+                });
+            });
+            tbody.querySelectorAll('.complaint-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('确定删除此申诉记录？')) {
+                        const id = parseInt(this.dataset.id);
+                        complaintData = complaintData.filter(d => d.id !== id);
+                        saveComplaintData(complaintData);
+                        renderComplaints();
+                    }
+                });
+            });
+        }
+
+        document.getElementById('complaintAdd').addEventListener('click', function() { openComplaintForm('添加申诉', null); });
+        document.getElementById('complaintSearchBtn').addEventListener('click', renderComplaints);
+        document.getElementById('complaintSearch').addEventListener('keyup', e => { if (e.key === 'Enter') renderComplaints(); });
+        document.getElementById('complaintPlatformFilter').addEventListener('change', renderComplaints);
+        document.getElementById('complaintShopFilter').addEventListener('change', renderComplaints);
+        document.getElementById('complaintResolvedFilter').addEventListener('change', renderComplaints);
+        document.getElementById('complaintClearFilter').addEventListener('click', function() {
+            document.getElementById('complaintSearch').value = '';
+            document.getElementById('complaintPlatformFilter').value = '';
+            document.getElementById('complaintShopFilter').value = '';
+            document.getElementById('complaintResolvedFilter').value = '';
+            renderComplaints();
+        });
+
+        document.getElementById('complaintExport').addEventListener('click', function() {
+            const headers = ['订单号','店铺','平台','申诉内容','是否解决','解决方案','创建时间'];
+            const rows = complaintData.map(item => [item.orderId, item.shop, item.platform, item.content, item.resolved ? '是' : '否', item.solution||'', item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN',{hour12:false}) : '']);
+            const wsData = [headers, ...rows];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            XLSX.utils.book_append_sheet(wb, ws, '申诉数据');
+            XLSX.writeFile(wb, `申诉数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+        });
+        document.getElementById('complaintImport').addEventListener('click', function() { document.getElementById('complaintFileInput').click(); });
+        document.getElementById('complaintFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = new Uint8Array(ev.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                    if (!jsonData || jsonData.length === 0) { alert('导入失败：Excel 为空'); return; }
+                    const imported = jsonData.map(row => {
+                        const orderId = (row['订单号']||'').toString().trim();
+                        const shop = (row['店铺']||'').toString().trim();
+                        const platform = (row['平台']||'').toString().trim();
+                        const content = (row['申诉内容']||'').toString().trim();
+                        const resolved = (row['是否解决']||'').toString().trim() === '是';
+                        const solution = (row['解决方案']||'').toString().trim();
+                        if (!orderId || !shop || !platform || !content) throw new Error('存在行缺少必填字段');
+                        if (!['Allegro','Cdiscount'].includes(platform)) throw new Error(`平台 "${platform}" 无效`);
+                        return { id: complaintNextId++, orderId, shop, platform, content, resolved, solution, createdAt: new Date().toISOString() };
+                    });
+                    if (confirm(`将导入 ${imported.length} 条数据，是否覆盖当前所有申诉？`)) {
+                        complaintData = imported;
+                        complaintNextId = complaintData.reduce((max, d) => Math.max(max, d.id), 0) + 1;
+                        saveComplaintData(complaintData);
+                        renderComplaints();
+                        alert(`成功导入 ${imported.length} 条申诉！`);
+                    }
+                } catch (err) { alert('导入失败：' + err.message); }
+            };
+            reader.readAsArrayBuffer(file);
+            this.value = '';
+        });
+
+        function openComplaintForm(title, data) {
+            const modal = document.getElementById('complaintModal');
+            document.getElementById('complaintModalTitle').textContent = title;
+            document.getElementById('complaintEditId').value = data ? data.id : '';
+            document.getElementById('complaintFOrderId').value = data ? data.orderId : '';
+            document.getElementById('complaintFShop').value = data ? data.shop : '';
+            document.getElementById('complaintFPlatform').value = data ? data.platform : 'Allegro';
+            document.getElementById('complaintFContent').value = data ? data.content : '';
+            document.getElementById('complaintFResolved').value = data ? (data.resolved ? '是' : '否') : '否';
+            document.getElementById('complaintFSolution').value = data ? data.solution : '';
+            modal.classList.add('active');
+        }
+        document.getElementById('complaintForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('complaintEditId').value) || 0;
+            const orderId = document.getElementById('complaintFOrderId').value.trim();
+            const shop = document.getElementById('complaintFShop').value.trim();
+            const platform = document.getElementById('complaintFPlatform').value;
+            const content = document.getElementById('complaintFContent').value.trim();
+            const resolved = document.getElementById('complaintFResolved').value === '是';
+            const solution = document.getElementById('complaintFSolution').value.trim();
+            if (!orderId || !shop || !content) { alert('请填写订单号、店铺和申诉内容'); return; }
+            if (id) {
+                const idx = complaintData.findIndex(d => d.id === id);
+                if (idx !== -1) { complaintData[idx] = { ...complaintData[idx], orderId, shop, platform, content, resolved, solution }; }
+            } else {
+                complaintData.push({ id: complaintNextId++, orderId, shop, platform, content, resolved, solution, createdAt: new Date().toISOString() });
+            }
+            saveComplaintData(complaintData);
+            document.getElementById('complaintModal').classList.remove('active');
+            renderComplaints();
+        });
+
+        window.onload = function() {};
     </script>
 </body>
 </html>
