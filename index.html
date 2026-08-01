@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        /* ===== 全局重置 ===== */
+        /* ===== 全局重置（完整保留，与之前相同） ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',-apple-system,sans-serif; background:#f1f5f9; color:#0f172a; padding:24px 20px; line-height:1.6; }
         .container { max-width:1600px; margin:0 auto; background:#fff; border-radius:20px; padding:28px 32px 36px; box-shadow:0 4px 20px rgba(0,0,0,0.04),0 1px 3px rgba(0,0,0,0.02); }
@@ -98,7 +98,6 @@
         .group-expand-btn.collapsed { transform:rotate(-90deg); }
         .group-expand-btn.expanded { transform:rotate(0deg); }
 
-        /* 子表格折叠容器（div） */
         .sub-table-wrapper {
             max-height: 0;
             overflow: hidden;
@@ -117,9 +116,8 @@
             padding: 8px 14px 8px 40px;
             border-bottom: 1px solid #f1f4f9;
             vertical-align: middle;
-            white-space: nowrap; /* 默认不换行 */
+            white-space: nowrap;
         }
-        /* 原因列允许换行并限制宽度 */
         .sub-table .reason-col {
             max-width: 200px;
             white-space: normal;
@@ -1013,7 +1011,6 @@
                     <td>${latestSol.trackingNumber || '—'}</td>
                     <td>${latestSol.trackingStatus || '—'}</td>
                 </tr>`;
-                // 子表格（div 包裹）
                 html += `<tr>
                     <td colspan="10" style="padding:0;">
                         <div class="sub-table-wrapper" data-groupid="${groupId}">
@@ -1023,7 +1020,6 @@
                 sortedRecords.forEach((rec, idx) => {
                     const solCount = rec.solutions ? rec.solutions.length : 0;
                     const recSol = getLatestSolutionInfo(rec);
-                    // 为原因列添加类 reason-col，限制宽度并允许换行
                     html += `<tr>
                         <td style="padding-left:40px;">
                             <input type="checkbox" class="sub-checkbox" data-id="${rec.id}" data-orderid="${orderId}" />
@@ -1601,7 +1597,7 @@
             this.value = '';
         });
 
-        // ========================== 3. 话术管理 ==========================
+        // ========================== 3. 话术管理（已修复复制功能） ==========================
         const SCRIPT_STORAGE_KEY = 'scriptData';
         let scriptData = JSON.parse(localStorage.getItem(SCRIPT_STORAGE_KEY) || '[]');
 
@@ -1636,7 +1632,12 @@
             let html = '';
             filtered.forEach((item, index) => {
                 const seq = index + 1;
-                const escapeQuote = (str) => (str || '').replace(/"/g, '&quot;');
+                // 为每个语言内容生成复制按钮（使用 JSON.stringify 安全转义）
+                const zhBtn = item.contentZh ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentZh)}, this)" title="复制中文"><i class="fas fa-copy"></i></button>` : '';
+                const plBtn = item.contentPl ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentPl)}, this)" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
+                const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentFr)}, this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
+                const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText(${JSON.stringify(item.contentEn)}, this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
+
                 const buildCell = (content, btnHtml, isChinese = false) => {
                     const hasContent = content && content.trim() !== '';
                     if (!hasContent) return `<span style="color:#94a3b8;">—</span>`;
@@ -1648,13 +1649,11 @@
                         <span class="script-actions">${expandBtn}${btnHtml}</span>
                     </div>`;
                 };
-                const plBtn = item.contentPl ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentPl)}', this)" title="复制波兰语"><i class="fas fa-copy"></i></button>` : '';
-                const frBtn = item.contentFr ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentFr)}', this)" title="复制法语"><i class="fas fa-copy"></i></button>` : '';
-                const enBtn = item.contentEn ? `<button class="copy-order-btn" onclick="copyText('${escapeQuote(item.contentEn)}', this)" title="复制英语"><i class="fas fa-copy"></i></button>` : '';
+
                 html += `<tr>
                     <td>${seq}</td>
                     <td>${item.category || '其他'}</td>
-                    <td style="max-width:280px;word-break:break-word;">${buildCell(item.contentZh, '', true)}</td>
+                    <td style="max-width:280px;word-break:break-word;">${buildCell(item.contentZh, zhBtn, true)}</td>
                     <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentPl, plBtn, false)}</td>
                     <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentFr, frBtn, false)}</td>
                     <td style="max-width:200px;word-break:break-word;">${buildCell(item.contentEn, enBtn, false)}</td>
